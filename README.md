@@ -170,7 +170,7 @@ To manually record an impression you can call the `recordImpression` method on a
 
 **Note**: If a third party impression URL exists for the placement, it will also be recorded.
 
-**Note 2**: The Adyo analytics API automatically detects duplicate impression requests so you don't have to worry if you are calling the `recordImpression` method more than one once (e.g When third party impression URL failed and you want to try again).
+**Note 2**: The Adyo analytics API automatically detects duplicate impression requests so you don't have to worry if you are calling the `recordImpression` method more than once (e.g When the third party impression URL request has failed and you would like to try again).
 
 ### Automatic Size Detection & Overriding Width and Height
 
