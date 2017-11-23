@@ -53,6 +53,8 @@
         keywords = @[]; // Empty array as API requires it
     }
     
+    data[@"keywords"] = keywords;
+    
     // Optional width and height
     if (params.width > 0 && params.height > 0) {
         data[@"width"] = [NSNumber numberWithUnsignedInteger:params.width];
