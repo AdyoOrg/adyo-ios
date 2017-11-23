@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		351953C61FC404130060D0E8 /* TestingToolTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 351953C51FC404130060D0E8 /* TestingToolTableViewController.m */; };
+		358CDDA71FC6D8AD0042DD25 /* Adyo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3542D0A01FBC5E9B00505265 /* Adyo.framework */; };
+		358CDDA81FC6D8AD0042DD25 /* Adyo.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3542D0A01FBC5E9B00505265 /* Adyo.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		35AEB58E1FB591C400E2E6CF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 35AEB58D1FB591C400E2E6CF /* AppDelegate.m */; };
 		35AEB5941FB591C400E2E6CF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 35AEB5921FB591C400E2E6CF /* Main.storyboard */; };
 		35AEB5961FB591C400E2E6CF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 35AEB5951FB591C400E2E6CF /* Assets.xcassets */; };
@@ -15,6 +17,20 @@
 		35AEB59C1FB591C400E2E6CF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 35AEB59B1FB591C400E2E6CF /* main.m */; };
 		35FD809E1FBDDE0800EE5D7D /* ZoneTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35FD809D1FBDDE0800EE5D7D /* ZoneTableViewController.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		358CDDA91FC6D8AD0042DD25 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				358CDDA81FC6D8AD0042DD25 /* Adyo.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		351953C41FC404130060D0E8 /* TestingToolTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestingToolTableViewController.h; sourceTree = "<group>"; };
@@ -38,6 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				358CDDA71FC6D8AD0042DD25 /* Adyo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,6 +115,7 @@
 				35AEB5851FB591C400E2E6CF /* Sources */,
 				35AEB5861FB591C400E2E6CF /* Frameworks */,
 				35AEB5871FB591C400E2E6CF /* Resources */,
+				358CDDA91FC6D8AD0042DD25 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
