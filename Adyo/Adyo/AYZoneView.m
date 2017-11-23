@@ -164,7 +164,7 @@
         
         // Depending on type, use different HTML for our webview
         NSString *html;
-        
+
         if ([placement.creativeType isEqualToString:@"image"]) {
             
             html = [[NSString alloc] initWithFormat:@"%@%@%@",
@@ -287,7 +287,7 @@
             if (_currentPlacement.refreshAfter > 0) {
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self performSelector:@selector(requestPlacement:) withObject:_currentParams afterDelay:_currentPlacement.refreshAfter];
+                    [self performSelector:@selector(refreshPlacement) withObject:nil afterDelay:_currentPlacement.refreshAfter];
                 });
             }
         }
@@ -299,14 +299,16 @@
     }
 }
 
+- (void)refreshPlacement {
+    
+    if (_currentPlacement) {
+        [self requestPlacement:_currentParams];
+    }
+}
+
 - (void)webViewTapped {
     
-    // Our placement click URL can have special symbols which are ALREADY encoded in the query params, so we only need to encode whatever still isn't safely URL encoded
-    NSMutableCharacterSet *alphaNumSymbols = [NSMutableCharacterSet characterSetWithCharactersInString:@"~!@#$&*()-_+=[]:;',/?."];
-    [alphaNumSymbols formUnionWithCharacterSet:[NSCharacterSet alphanumericCharacterSet]];
-    
-    NSString *urlString = [_currentPlacement.clickUrl stringByAddingPercentEncodingWithAllowedCharacters:alphaNumSymbols];
-    
+    NSString *urlString = [_currentPlacement.clickUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
 }
 
