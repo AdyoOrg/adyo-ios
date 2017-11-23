@@ -10,17 +10,36 @@
 
 @import Adyo;
 
-#define DEMO_NETWORK_ID 13
-#define DEMO_ZONE_ID_1 3
-#define DEMO_ZONE_ID_2 4
+#define DEMO_NETWORK_ID 1
+#define DEMO_ZONE_ID_1 1
+#define DEMO_ZONE_ID_2 2
+
+typedef NS_ENUM(NSInteger, CreativeType) {
+    CreativeTypeAll,
+    CreativeTypeRichMedia,
+    CreativeTypeImage,
+};
 
 @interface ZoneTableViewController () <AYZoneViewDelegate>
 
+@property (strong, nonatomic) IBOutlet UISegmentedControl *typeSegmentedControl;
+@property (strong, nonatomic) IBOutlet UIView *zoneContainerView;
+@property (strong, nonatomic) IBOutlet UIView *zoneContainerView2;
 @property (strong, nonatomic) IBOutlet AYZoneView *zoneView;
 @property (strong, nonatomic) IBOutlet AYZoneView *zoneView2;
+@property (strong, nonatomic) IBOutlet UIView *timerView;
+@property (strong, nonatomic) IBOutlet UIView *timerView2;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *timerWidthConstraint;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *timerWidthConstraint2;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *timerTrailingConstraint;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *timerTrailingConstraint2;
+
+
 
 @property (strong, nonatomic) AYPlacementRequestParams *params;
 @property (strong, nonatomic) AYPlacementRequestParams *params2;
+
+- (IBAction)typeChanged;
 
 @end
 
@@ -51,7 +70,20 @@
         if (!found) {
             NSLog(@"No placement found on Zone #1.");
         } else if (placement.refreshAfter > 0) {
+            
             NSLog(@"Received placement on Zone #1. Automatically requesting new one in %d seconds..", (int)placement.refreshAfter);
+            
+            // Cool little animation using autolayout to show refresh rate
+            [UIView animateWithDuration:placement.refreshAfter animations:^{
+                _timerWidthConstraint.active = NO;
+                _timerTrailingConstraint.active = YES;
+                [_zoneContainerView layoutIfNeeded];
+            } completion:^(BOOL finished) {
+                _timerTrailingConstraint.active = NO;
+                _timerWidthConstraint.active = YES;
+                [_zoneContainerView layoutIfNeeded];
+            }];
+            
         } else {
             NSLog(@"Received placement on Zone #1. Refresh is 0 thus this    ad will stay.");
         }
@@ -62,6 +94,18 @@
             NSLog(@"No placement found on Zone #2.");
         } else if (placement.refreshAfter > 0) {
             NSLog(@"Received placement on Zone #2. Automatically requesting new one in %d seconds..", (int)placement.refreshAfter);
+            
+            // Cool little animation using autolayout to show refresh rate
+            [UIView animateWithDuration:placement.refreshAfter animations:^{
+                _timerWidthConstraint2.active = NO;
+                _timerTrailingConstraint2.active = YES;
+                [_zoneContainerView2 layoutIfNeeded];
+            } completion:^(BOOL finished) {
+                _timerTrailingConstraint2.active = NO;
+                _timerWidthConstraint2.active = YES;
+                [_zoneContainerView2 layoutIfNeeded];
+            }];
+            
         } else {
             NSLog(@"Received placement on Zone #2. Refresh is 0 thus this ad will stay.");
         }
@@ -77,6 +121,32 @@
     } else {
         NSLog(@"Zone #2 placement request failed! Lets try again in 2 seconds..");
         [zoneView performSelector:@selector(requestPlacement:) withObject:_params2 afterDelay:2];
+    }
+}
+
+#pragma mark - Private
+
+- (IBAction)typeChanged {
+    
+    // All Adyo demo placements for these zones have keywords to distinguish creative types for demo purposes when using the creative type segmented control
+    switch (_typeSegmentedControl.selectedSegmentIndex) {
+        case CreativeTypeAll:
+            _params.keywords = @[];
+            _params2.keywords = @[];
+            break;
+            
+        case CreativeTypeRichMedia:
+            _params.keywords = @[@"creative-type-rich-media"];
+            _params2.keywords = @[@"creative-type-rich-media"];
+            break;
+            
+        case CreativeTypeImage:
+            _params.keywords = @[@"creative-type-image"];
+            _params2.keywords = @[@"creative-type-image"];
+            break;
+            
+        default:
+            break;
     }
 }
 

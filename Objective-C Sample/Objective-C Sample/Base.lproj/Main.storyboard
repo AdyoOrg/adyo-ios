@@ -421,10 +421,40 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <sections>
+                            <tableViewSection headerTitle="Creative Type" id="6g8-rT-LnQ">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="60" id="Igw-uo-S0R">
+                                        <rect key="frame" x="0.0" y="55.5" width="375" height="60"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Igw-uo-S0R" id="TVu-Mf-WLi">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="59.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Ohu-eg-RP6">
+                                                    <rect key="frame" x="16" y="16" width="343" height="29"/>
+                                                    <segments>
+                                                        <segment title="All"/>
+                                                        <segment title="Rich Media"/>
+                                                        <segment title="Image"/>
+                                                    </segments>
+                                                    <connections>
+                                                        <action selector="typeChanged" destination="bLI-bZ-FBm" eventType="valueChanged" id="GXz-PD-Zze"/>
+                                                    </connections>
+                                                </segmentedControl>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Ohu-eg-RP6" firstAttribute="leading" secondItem="TVu-Mf-WLi" secondAttribute="leadingMargin" id="fkH-FG-tIa"/>
+                                                <constraint firstItem="Ohu-eg-RP6" firstAttribute="centerY" secondItem="TVu-Mf-WLi" secondAttribute="centerY" id="nz9-LC-GOc"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="Ohu-eg-RP6" secondAttribute="trailing" id="sca-nS-l3t"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
                             <tableViewSection headerTitle="Zone 1" id="4RS-yN-2Vh">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="170" id="jtl-QT-dqY">
-                                        <rect key="frame" x="0.0" y="55.5" width="375" height="170"/>
+                                        <rect key="frame" x="0.0" y="171.5" width="375" height="170"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="jtl-QT-dqY" id="xhL-Zj-dN4">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="169.5"/>
@@ -438,9 +468,20 @@
                                                         <constraint firstAttribute="width" priority="750" constant="200" id="iM6-ld-ANK"/>
                                                     </constraints>
                                                 </view>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kpn-HK-ZeR">
+                                                    <rect key="frame" x="0.0" y="167.5" width="1" height="2"/>
+                                                    <color key="backgroundColor" red="0.19215686269999999" green="0.73725490199999999" blue="0.72549019609999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="2" id="6Xh-IA-db4"/>
+                                                        <constraint firstAttribute="width" priority="999" constant="1" id="rap-5g-hqn"/>
+                                                    </constraints>
+                                                </view>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstItem="kpn-HK-ZeR" firstAttribute="leading" secondItem="xhL-Zj-dN4" secondAttribute="leading" id="7eR-rE-was"/>
+                                                <constraint firstAttribute="bottom" secondItem="kpn-HK-ZeR" secondAttribute="bottom" id="PVf-e0-Uol"/>
                                                 <constraint firstItem="9BL-uB-WMr" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="xhL-Zj-dN4" secondAttribute="leadingMargin" id="WYj-Sg-fGb"/>
+                                                <constraint firstAttribute="trailing" secondItem="kpn-HK-ZeR" secondAttribute="trailing" priority="750" id="Zfm-pV-7PX"/>
                                                 <constraint firstItem="9BL-uB-WMr" firstAttribute="centerX" secondItem="xhL-Zj-dN4" secondAttribute="centerX" id="aIk-fn-NAp"/>
                                                 <constraint firstItem="9BL-uB-WMr" firstAttribute="centerY" secondItem="xhL-Zj-dN4" secondAttribute="centerY" id="adg-gt-CF6"/>
                                                 <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="9BL-uB-WMr" secondAttribute="trailing" id="pOz-cJ-GPG"/>
@@ -452,7 +493,7 @@
                             <tableViewSection headerTitle="Zone 2" id="ZhF-gl-zyF">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="300" id="zRa-e0-aQZ">
-                                        <rect key="frame" x="0.0" y="281.5" width="375" height="300"/>
+                                        <rect key="frame" x="0.0" y="397.5" width="375" height="300"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="zRa-e0-aQZ" id="oGh-2y-Pfj">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="299.5"/>
@@ -466,11 +507,22 @@
                                                         <constraint firstAttribute="width" priority="750" constant="300" id="vuC-pj-d1k"/>
                                                     </constraints>
                                                 </view>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xac-Zr-aiu">
+                                                    <rect key="frame" x="0.0" y="297.5" width="1" height="2"/>
+                                                    <color key="backgroundColor" red="0.19215686269999999" green="0.73725490199999999" blue="0.72549019609999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="2" id="1Uf-Cq-S90"/>
+                                                        <constraint firstAttribute="width" priority="999" constant="1" id="7o5-iT-Klg"/>
+                                                    </constraints>
+                                                </view>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="xac-Zr-aiu" secondAttribute="trailing" priority="250" id="49d-Ig-OY8"/>
                                                 <constraint firstItem="jtB-pR-5kA" firstAttribute="centerX" secondItem="oGh-2y-Pfj" secondAttribute="centerX" id="5F8-Lr-ROn"/>
+                                                <constraint firstItem="xac-Zr-aiu" firstAttribute="leading" secondItem="oGh-2y-Pfj" secondAttribute="leading" id="9jo-cO-1hq"/>
                                                 <constraint firstItem="jtB-pR-5kA" firstAttribute="centerY" secondItem="oGh-2y-Pfj" secondAttribute="centerY" id="C23-pt-f3b"/>
                                                 <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="jtB-pR-5kA" secondAttribute="trailing" id="EBR-sX-f5j"/>
+                                                <constraint firstAttribute="bottom" secondItem="xac-Zr-aiu" secondAttribute="bottom" id="rKO-Tp-GLq"/>
                                                 <constraint firstItem="jtB-pR-5kA" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="oGh-2y-Pfj" secondAttribute="leadingMargin" id="yah-UZ-29p"/>
                                             </constraints>
                                         </tableViewCellContentView>
@@ -484,13 +536,22 @@
                         </connections>
                     </tableView>
                     <connections>
+                        <outlet property="timerTrailingConstraint" destination="Zfm-pV-7PX" id="qSz-ME-4bp"/>
+                        <outlet property="timerTrailingConstraint2" destination="49d-Ig-OY8" id="lYR-7Z-It9"/>
+                        <outlet property="timerView" destination="kpn-HK-ZeR" id="veL-H3-pCo"/>
+                        <outlet property="timerView2" destination="xac-Zr-aiu" id="OoE-iU-xoz"/>
+                        <outlet property="timerWidthConstraint" destination="rap-5g-hqn" id="FIi-vV-JKF"/>
+                        <outlet property="timerWidthConstraint2" destination="7o5-iT-Klg" id="oEI-rA-cpu"/>
+                        <outlet property="typeSegmentedControl" destination="Ohu-eg-RP6" id="sVA-A9-JGe"/>
+                        <outlet property="zoneContainerView" destination="xhL-Zj-dN4" id="Xyi-b0-exM"/>
+                        <outlet property="zoneContainerView2" destination="oGh-2y-Pfj" id="Y2a-Ca-UeM"/>
                         <outlet property="zoneView" destination="9BL-uB-WMr" id="ECf-3b-B4h"/>
                         <outlet property="zoneView2" destination="jtB-pR-5kA" id="6eV-pZ-xjI"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZVo-vT-cln" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="58" y="-9"/>
+            <point key="canvasLocation" x="56.799999999999997" y="-9.4452773613193415"/>
         </scene>
     </scenes>
     <resources>
