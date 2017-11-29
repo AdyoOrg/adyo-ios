@@ -28,5 +28,6 @@
 @property (nonatomic, weak) id<AYZoneViewDelegate> delegate;
 
 - (void)requestPlacement:(AYPlacementRequestParams *)params;
+- (void)reset;
 
 @end

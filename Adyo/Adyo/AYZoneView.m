@@ -15,10 +15,12 @@
 
 @property (strong, nonatomic) WKWebView *webView;
 @property (assign, nonatomic) BOOL loading;
+@property (assign, nonatomic) BOOL refreshScheduled;
 
 @property (strong, nonatomic) AYPlacement *currentPlacement;
 @property (strong, nonatomic) AYPlacementRequestParams *currentParams;
 @property (strong, nonatomic) UITapGestureRecognizer *tapGestureRecognizer;
+
 
 @end
 
@@ -136,7 +138,7 @@
 }
 
 - (void)requestPlacement:(AYPlacementRequestParams *)params {
-    
+
     _loading = YES;
     
     // If banner view property 'determineSize' is true, we need to determine the size right now depending on the current size of the webview
@@ -238,8 +240,6 @@
     } failure:^(NSError *error) {
         
         _loading = NO;
-        _currentPlacement = nil;
-        _currentParams = nil;
         
         if ([_delegate respondsToSelector:@selector(zoneView:didFailToReceivePlacement:)]) {
             [_delegate zoneView:self didFailToReceivePlacement:error];
@@ -264,15 +264,18 @@
             _loading = NO;
             
             // If the placement has a click url, we need to add a tap gesture recognizer to the web view a whole to intercept taps
-            if (_currentPlacement.clickUrl && ![_currentPlacement.clickUrl isKindOfClass:[NSNull class]] && !_tapGestureRecognizer) {
+            if (_tapGestureRecognizer) {
+                
+                [_webView removeGestureRecognizer:_tapGestureRecognizer];
+                _tapGestureRecognizer = nil;
+            }
+            
+            if (_currentPlacement.clickUrl && ![_currentPlacement.clickUrl isKindOfClass:[NSNull class]]) {
+                
                 _tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(webViewTapped)];
                 _tapGestureRecognizer.delegate = self;
                 [_webView addGestureRecognizer:_tapGestureRecognizer];
                 
-            } else if (_tapGestureRecognizer) {
-                
-                // If this placement has no destination URL, we need to remove the tap gesture recognizer if it exists (E.g Rich media ad with its own links inside the rich media
-                [_webView removeGestureRecognizer:_tapGestureRecognizer];
             }
             
             // Let delegate know we have received the placement
@@ -283,8 +286,10 @@
             // Record the impression on the placement
             [_currentPlacement recordImpression:nil failure:nil];
             
-            // Check if need to request a new placement in a few seconds
-            if (_currentPlacement.refreshAfter > 0) {
+            // Check if need to request a new placement in a few seconds (also don't fire a new refresh if one is already being fired
+            if (_currentPlacement.refreshAfter > 0 && !_refreshScheduled) {
+                
+                _refreshScheduled = YES;
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self performSelector:@selector(refreshPlacement) withObject:nil afterDelay:_currentPlacement.refreshAfter];
@@ -301,15 +306,65 @@
 
 - (void)refreshPlacement {
     
-    if (_currentPlacement) {
+    _refreshScheduled = NO;
+    
+    if (_currentParams) {
+        
         [self requestPlacement:_currentParams];
     }
 }
 
 - (void)webViewTapped {
     
-    NSString *urlString = [_currentPlacement.clickUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+    NSURL *url = [NSURL URLWithString:_currentPlacement.clickUrl];
+    
+    // If url is NULL, try encoding
+    if (url == nil) {
+        
+        NSString *encodedString = [_currentPlacement.clickUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
+        
+        url = [NSURL URLWithString:encodedString];
+    }
+    
+    if (url) {
+        [[UIApplication sharedApplication] openURL:url];
+    }
+}
+
+- (void)reset {
+    
+    // We simply reset the zone view to its initial state before the request
+    _currentPlacement = nil;
+    _currentParams = nil;
+    _loading = NO;
+    _refreshScheduled = NO;
+    
+    if (_tapGestureRecognizer) {
+        [_webView removeGestureRecognizer:_tapGestureRecognizer];
+    }
+    
+    _tapGestureRecognizer = nil;
+    
+    NSString *html = [[NSString alloc] initWithFormat:
+            @"<!DOCTYPE html>"
+            "<html>"
+            "<head>"
+            "<meta charset=\"UTF-8\">"
+            "<meta name=\"viewport\" content=\"initial-scale=1.0\"/>"
+            "<style type=\"text/css\">"
+            "html{margin:0;padding:0;}"
+            "body {"
+            "background: none;"
+            "-webkit-touch-callout: none;"
+            "-webkit-user-select: none;"
+            "}"
+            "</style>"
+            "</head>"
+            "<body>"
+            "</body>"
+            "</html>"];
+    
+    [_webView loadHTMLString:html baseURL:nil];
 }
 
 @end
