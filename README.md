@@ -28,7 +28,11 @@ Installation can be done manually by building and copying the framework into you
 Simply import Adyo to get started:
 
 ```objective-c
-@import Adyo;
+@import Adyo; // If using framework
+
+// or
+
+#import "Adyo.h"
 ```
 
 ### Create an AYZoneView
