@@ -59,6 +59,10 @@
     return self;
 }
 
+- (void)dealloc {
+    [_webView removeObserver:self forKeyPath:@"loading"];
+}
+
 #pragma mark - WKNavigationDelegate
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
