@@ -11,8 +11,7 @@
 @import Adyo;
 
 #define DEMO_NETWORK_ID 1
-#define DEMO_ZONE_ID_1 1
-#define DEMO_ZONE_ID_2 2
+#define DEMO_ZONE_ID 13
 
 typedef NS_ENUM(NSInteger, CreativeType) {
     CreativeTypeAll,
@@ -49,12 +48,16 @@ typedef NS_ENUM(NSInteger, CreativeType) {
     [super viewDidLoad];
     
     // Setup placement request params for our zone views
-    _params = [[AYPlacementRequestParams alloc] initWithNetworkId:DEMO_NETWORK_ID zoneId:DEMO_ZONE_ID_1];
-    _params2 = [[AYPlacementRequestParams alloc] initWithNetworkId:DEMO_NETWORK_ID zoneId:DEMO_ZONE_ID_2];
+    _params = [[AYPlacementRequestParams alloc] initWithNetworkId:DEMO_NETWORK_ID zoneId:DEMO_ZONE_ID];
+    _params2 = [[AYPlacementRequestParams alloc] initWithNetworkId:DEMO_NETWORK_ID zoneId:DEMO_ZONE_ID];
     
     // Set zone view delegates to receive events
     _zoneView.delegate = self;
     _zoneView2.delegate = self;
+    
+    // The demo zone in backend is dynamically sized (no fixed width or height), so lets send through our width and heights and it will pick best sized creative
+    _zoneView.detectSize = YES;
+    _zoneView2.detectSize = YES;
     
     // Request placements (ads)
     [_zoneView requestPlacement:_params];
