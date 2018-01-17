@@ -61,6 +61,11 @@
         data[@"height"] = [NSNumber numberWithUnsignedInteger:params.height];
     }
     
+    // Optional Custom Properties
+    if (params.custom != nil && params.custom.count > 0) {
+        data[@"custom"] = params.custom;
+    }
+    
     NSData *postData = [NSJSONSerialization dataWithJSONObject:data options:0 error:nil];
     
     // Now setup the request

@@ -21,8 +21,15 @@
 @property (strong, nonatomic) IBOutlet UITextField *zoneIdTextField;
 @property (strong, nonatomic) IBOutlet UITextField *userIdTextField;
 @property (strong, nonatomic) IBOutlet UITextField *keywordsTextField;
+@property (strong, nonatomic) IBOutlet UITextField *customPropertyTextField;
+@property (strong, nonatomic) IBOutlet UITextField *customPropertyTextField2;
+@property (strong, nonatomic) IBOutlet UITextField *customPropertyTextField3;
+@property (strong, nonatomic) IBOutlet UITextField *customValueTextField;
+@property (strong, nonatomic) IBOutlet UITextField *customValueTextField2;
+@property (strong, nonatomic) IBOutlet UITextField *customValueTextField3;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *requestIndicator;
 @property (strong, nonatomic) IBOutlet UIButton *requestButton;
+
 
 @property (assign, nonatomic) BOOL requesting;
 @property (strong, nonatomic) UITapGestureRecognizer *tapRecognizer;
@@ -124,6 +131,18 @@
         return [self showAlertWithTitle:@"Zone ID Required" andBody:@"Please provide a zone ID."];
     }
     
+    if ((_customValueTextField.text.length > 0 && _customPropertyTextField.text.length == 0) ||
+        (_customValueTextField2.text.length > 0 && _customPropertyTextField2.text.length == 0) ||
+        (_customValueTextField3.text.length > 0 && _customPropertyTextField3.text.length == 0)) {
+        return [self showAlertWithTitle:@"Property Name Required" andBody:@"Custom properties cannot have empty property names."];
+    }
+    
+    if ((_customPropertyTextField.text.length > 0 && _customValueTextField.text.length == 0) ||
+        (_customPropertyTextField2.text.length > 0 && _customValueTextField2.text.length == 0) ||
+        (_customPropertyTextField3.text.length > 0 && _customValueTextField3.text.length == 0)) {
+        return [self showAlertWithTitle:@"Custom Value Required" andBody:@"Custom properties cannot have empty values."];
+    }
+    
     // Setup params
     AYPlacementRequestParams *params = [[AYPlacementRequestParams alloc] init];
     params.networkId = _networkIdTextField.text.integerValue;
@@ -135,6 +154,24 @@
     
     if (_keywordsTextField.text.length > 0) {
         params.keywords = [[_keywordsTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] componentsSeparatedByString:@","];
+    }
+    
+    NSMutableDictionary *custom = [[NSMutableDictionary alloc] init];
+    
+    if (_customPropertyTextField.text.length > 0) {
+        custom[_customPropertyTextField.text] = _customValueTextField.text;
+    }
+    
+    if (_customPropertyTextField2.text.length > 0) {
+        custom[_customPropertyTextField2.text] = _customValueTextField2.text;
+    }
+    
+    if (_customPropertyTextField3.text.length > 0) {
+        custom[_customPropertyTextField3.text] = _customValueTextField3.text;
+    }
+    
+    if (custom.count > 0) {
+        params.custom = custom;
     }
     
     // Execute the request
