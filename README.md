@@ -84,6 +84,7 @@ The following attributes are available:
 | `keywords`  | *Optional*        | An array of keywords used for keyword targeting. |
 | `width`     | *Optional*        | Manual width override. Explained below.  |
 | `height`    | *Optional*        | Manual height override. Explained below. |
+| `custom`    | *Optional*        | NSDictionary of custom properties that can be used later when querying using the Adyo Analytics API. Values can only be string, number or boolean. |
 
 
 ### Requesting a Placement
