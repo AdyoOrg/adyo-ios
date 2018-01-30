@@ -19,6 +19,7 @@
 
 @property (assign, nonatomic) BOOL loading;
 @property (assign, nonatomic) BOOL refreshScheduled;
+@property (assign, nonatomic) BOOL paused;
 
 @property (strong, nonatomic) AYPlacement *currentPlacement;
 @property (strong, nonatomic) AYPlacementRequestParams *currentParams;
@@ -198,7 +199,8 @@
 }
 
 - (void)requestPlacement:(AYPlacementRequestParams *)params {
-
+    
+    _paused = NO;
     _loading = YES;
     
     // If banner view property 'determineSize' is true, we need to determine the size right now depending on the current size of the webview
@@ -366,6 +368,13 @@
 
 - (void)refreshPlacement {
     
+    // Check if we are paused
+    if (_paused) {
+        
+        [self performSelector:@selector(refreshPlacement) withObject:nil afterDelay:5];
+        return;
+    }
+    
     _refreshScheduled = NO;
     
     if (_currentParams) {
@@ -489,26 +498,34 @@
     
     _tapGestureRecognizer = nil;
     
-    NSString *html = [[NSString alloc] initWithFormat:
-            @"<!DOCTYPE html>"
-            "<html>"
-            "<head>"
-            "<meta charset=\"UTF-8\">"
-            "<meta name=\"viewport\" content=\"initial-scale=1.0\"/>"
-            "<style type=\"text/css\">"
-            "html{margin:0;padding:0;}"
-            "body {"
-            "background: none;"
-            "-webkit-touch-callout: none;"
-            "-webkit-user-select: none;"
-            "}"
-            "</style>"
-            "</head>"
-            "<body>"
-            "</body>"
-            "</html>"];
-    
-    [_webView loadHTMLString:html baseURL:nil];
+//    NSString *html = [[NSString alloc] initWithFormat:
+//            @"<!DOCTYPE html>"
+//            "<html>"
+//            "<head>"
+//            "<meta charset=\"UTF-8\">"
+//            "<meta name=\"viewport\" content=\"initial-scale=1.0\"/>"
+//            "<style type=\"text/css\">"
+//            "html{margin:0;padding:0;}"
+//            "body {"
+//            "background: none;"
+//            "-webkit-touch-callout: none;"
+//            "-webkit-user-select: none;"
+//            "}"
+//            "</style>"
+//            "</head>"
+//            "<body>"
+//            "</body>"
+//            "</html>"];
+//    
+//    [_webView loadHTMLString:html baseURL:nil];
+}
+
+- (void)resume {
+    _paused = NO;
+}
+
+- (void)pause {
+    _paused = YES;
 }
 
 - (void)refreshPopupConstraints {

@@ -47,5 +47,7 @@
 
 - (void)requestPlacement:(AYPlacementRequestParams *)params;
 - (void)reset;
+- (void)resume;
+- (void)pause;
 
 @end
