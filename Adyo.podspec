@@ -8,5 +8,5 @@ Pod::Spec.new do |s|
   s.source = { :git => 'https://github.com/AdyoOrg/adyo-ios.git', :tag => "v#{s.version}" }
   s.source_files = 'Adyo/Adyo/*'
   s.platform     = :ios, '9.0'
-  s.frameworks = 'Foundation', 'UIKit', 'AdSupport', 'WebKit'
+  s.frameworks = 'Foundation', 'UIKit', 'AdSupport', 'WebKit', 'SafariServices'
 end

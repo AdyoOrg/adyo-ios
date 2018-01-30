@@ -129,6 +129,7 @@
         placement.creativeType = result[@"creative_type"];
         placement.creativeUrl = result[@"creative_url"];
         placement.refreshAfter = [result[@"refresh_after"] doubleValue];
+        placement.target = result[@"app_target"];
         
         if (success) {
             

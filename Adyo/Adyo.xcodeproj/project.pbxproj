@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		350DE62B201F8851004D968C /* AYPopupViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 350DE628201F8851004D968C /* AYPopupViewController.h */; };
+		350DE62C201F8851004D968C /* AYPopupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 350DE629201F8851004D968C /* AYPopupViewController.m */; };
+		350DE62D201F8851004D968C /* AYPopupViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 350DE62A201F8851004D968C /* AYPopupViewController.xib */; };
 		3538159E1FB5A27600FF56E4 /* AYPlacement.h in Headers */ = {isa = PBXBuildFile; fileRef = 3538159C1FB5A27600FF56E4 /* AYPlacement.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3538159F1FB5A27600FF56E4 /* AYPlacement.m in Sources */ = {isa = PBXBuildFile; fileRef = 3538159D1FB5A27600FF56E4 /* AYPlacement.m */; };
 		353815A21FB5D1E000FF56E4 /* AYZoneView.h in Headers */ = {isa = PBXBuildFile; fileRef = 353815A01FB5D1E000FF56E4 /* AYZoneView.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -20,6 +23,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		350DE628201F8851004D968C /* AYPopupViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AYPopupViewController.h; sourceTree = "<group>"; };
+		350DE629201F8851004D968C /* AYPopupViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AYPopupViewController.m; sourceTree = "<group>"; };
+		350DE62A201F8851004D968C /* AYPopupViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AYPopupViewController.xib; sourceTree = "<group>"; };
 		3538159C1FB5A27600FF56E4 /* AYPlacement.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AYPlacement.h; sourceTree = "<group>"; };
 		3538159D1FB5A27600FF56E4 /* AYPlacement.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AYPlacement.m; sourceTree = "<group>"; };
 		353815A01FB5D1E000FF56E4 /* AYZoneView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AYZoneView.h; sourceTree = "<group>"; };
@@ -75,6 +81,9 @@
 				35FD80991FBD8D2900EE5D7D /* UIDeviceHardware.h */,
 				35FD80981FBD8D2900EE5D7D /* UIDeviceHardware.m */,
 				35AEB5791FB58F9F00E2E6CF /* Info.plist */,
+				350DE628201F8851004D968C /* AYPopupViewController.h */,
+				350DE629201F8851004D968C /* AYPopupViewController.m */,
+				350DE62A201F8851004D968C /* AYPopupViewController.xib */,
 			);
 			path = Adyo;
 			sourceTree = "<group>";
@@ -88,6 +97,7 @@
 			files = (
 				35AEB5A91FB598C100E2E6CF /* AYPlacementRequestParams.h in Headers */,
 				35FD809B1FBD8D2900EE5D7D /* UIDeviceHardware.h in Headers */,
+				350DE62B201F8851004D968C /* AYPopupViewController.h in Headers */,
 				3538159E1FB5A27600FF56E4 /* AYPlacement.h in Headers */,
 				353815A21FB5D1E000FF56E4 /* AYZoneView.h in Headers */,
 				35AEB57A1FB58F9F00E2E6CF /* Adyo.h in Headers */,
@@ -152,6 +162,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				350DE62D201F8851004D968C /* AYPopupViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -167,6 +178,7 @@
 				3538159F1FB5A27600FF56E4 /* AYPlacement.m in Sources */,
 				35AEB5A61FB5980800E2E6CF /* Adyo.m in Sources */,
 				35AEB5AA1FB598C100E2E6CF /* AYPlacementRequestParams.m in Sources */,
+				350DE62C201F8851004D968C /* AYPopupViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,12 +8,15 @@
 
 #import "AYZoneView.h"
 #import "Adyo.h"
+#import "AYPopupViewController.h"
 
 @import WebKit;
+@import SafariServices;
 
-@interface AYZoneView() <WKNavigationDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
+@interface AYZoneView() <WKNavigationDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate, SFSafariViewControllerDelegate>
 
 @property (strong, nonatomic) WKWebView *webView;
+
 @property (assign, nonatomic) BOOL loading;
 @property (assign, nonatomic) BOOL refreshScheduled;
 
@@ -21,6 +24,11 @@
 @property (strong, nonatomic) AYPlacementRequestParams *currentParams;
 @property (strong, nonatomic) UITapGestureRecognizer *tapGestureRecognizer;
 
+// Popup related
+@property (strong, nonatomic) AYPopupViewController *popupViewController;
+@property (strong, nonatomic) WKWebView *popupWebView;
+@property (assign, nonatomic) float currentPopupContentHeight;
+@property (assign, nonatomic) float currentPopupContentWidth;
 
 @end
 
@@ -65,9 +73,41 @@
 
 #pragma mark - WKNavigationDelegate
 
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+    
+    // Only used for popup view to get height of content
+    if (webView != _popupWebView) {
+        return;
+    }
+    
+    _popupViewController.activityIndicator.hidden = YES;
+    [_popupViewController.activityIndicator stopAnimating];
+   
+    // Only detect and resize popup wrapper if set to
+    if (_popupScalesToContent) {
+        [_popupWebView evaluateJavaScript:@"document.body.scrollHeight" completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+            
+            _currentPopupContentHeight = [result floatValue];
+            [self refreshPopupConstraints];
+        }];
+        
+        [_popupWebView evaluateJavaScript:@"document.body.scrollWidth" completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+            
+            _currentPopupContentWidth = [result floatValue];
+            [self refreshPopupConstraints];
+        }];
+    }
+}
+
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
    
-    
+    // Check if content webview or main content web view
+    if (webView == _popupWebView) {
+        decisionHandler(WKNavigationActionPolicyAllow);
+
+        return;
+    }
+
     // If placement has click URL, we don't need to intercept taps/clicks within the webview as the webview as a whole has a tap gesture to open the click URL natively
     if ([_currentPlacement.clickUrl isKindOfClass:[NSNull class]] && navigationAction.navigationType == WKNavigationTypeLinkActivated) {
         
@@ -107,6 +147,13 @@
     return nil;
 }
 
+#pragma mark - SFSafariViewControllerDelegate
+
+- (void)safariViewControllerDidFinish:(SFSafariViewController *)controller {
+    
+    [controller dismissViewControllerAnimated:YES completion:nil];
+}
+
 #pragma  mark - Private
 
 - (void)setup {
@@ -139,6 +186,15 @@
     
     // Attach KVO to webview to determine if all content within webview has loaded
     [_webView addObserver:self forKeyPath:@"loading" options:NSKeyValueObservingOptionNew context:nil];
+    
+    // Setup popup view related members
+    _currentPopupContentWidth = 400;
+    _currentPopupContentHeight = 250;
+    _popupCornerRadius = 6.0f;
+    _popupScalesToContent = YES;
+    _popupShowLoader = YES;
+    _popupInitialWidth = 400;
+    _popupInitialHeight = 250;
 }
 
 - (void)requestPlacement:(AYPlacementRequestParams *)params {
@@ -320,6 +376,12 @@
 
 - (void)webViewTapped {
     
+    // Don't do anything if click url is null
+    if (!_currentPlacement.clickUrl || _currentPlacement.clickUrl.length == 0) {
+        return;
+    }
+    
+    // Get NSURL out of click url string
     NSURL *url = [NSURL URLWithString:_currentPlacement.clickUrl];
     
     // If url is NULL, try encoding
@@ -330,9 +392,87 @@
         url = [NSURL URLWithString:encodedString];
     }
     
-    if (url) {
-        [[UIApplication sharedApplication] openURL:url];
+    if (!url) {
+        return;
     }
+   
+    // Depending on the target of the placement, we either open the destination url via SFSafariViewController, in-app popup, or default change to browser
+    if ([_currentPlacement.target isEqualToString:@"inside"]) {
+        [self openURLInside:url];
+    } else if ([_currentPlacement.target isEqualToString:@"popup"]) {
+        [self openURLWithPopup:url];
+    } else {
+        [[UIApplication sharedApplication] openURL:url]; // Default open Safari
+    }
+}
+
+- (void)openURLInside:(NSURL *)url {
+    
+    // Open URL using Safari view controller
+    SFSafariViewController *sf = [[SFSafariViewController alloc] initWithURL:url];
+    sf.delegate = self;
+    
+    // Get view controller this view is on
+    UIViewController *parentViewController = [self parentViewController];
+    
+    // If we cannot find it then just open using Safari
+    if (!parentViewController) {
+        [[UIApplication sharedApplication] openURL:url];
+        
+        return;
+    }
+    
+    [parentViewController presentViewController:sf animated:YES completion:nil];
+}
+
+- (void)openURLWithPopup:(NSURL *)url {
+    
+    // Get view controller this view is on
+    UIViewController *parentViewController = [self parentViewController];
+
+    // If we cannot find it then just open using Safari
+    if (!parentViewController) {
+        [[UIApplication sharedApplication] openURL:url];
+
+        return;
+    }
+    
+    // Load pop up view controller from nib and configure
+    NSBundle *bundle  = [NSBundle bundleForClass:[AYZoneView class]];
+    _popupViewController = [[AYPopupViewController alloc] initWithNibName:NSStringFromClass([AYPopupViewController class]) bundle:bundle];
+    
+    _popupViewController.modalPresentationStyle = (_popupPresentationStyle) ? _popupPresentationStyle : UIModalPresentationOverCurrentContext;
+    _popupViewController.modalTransitionStyle = (_popupTransitionStyle) ? _popupTransitionStyle : UIModalTransitionStyleCrossDissolve;
+    
+    _popupViewController.wrapperInitialWidth = _popupInitialWidth;
+    _popupViewController.wrapperInitialHeight = _popupInitialHeight;
+    _popupViewController.wrapperCornerRadius = _popupCornerRadius;
+    _popupViewController.showLoader = _popupShowLoader;
+    _popupViewController.overlayColor = _popupOverlayColor;
+    _popupViewController.backgroundColor = _popupBackgroundColor;
+    _popupViewController.doneButtonTintColor = _popupDoneButtonTintColor;
+    _popupViewController.barTintColor = _popupBarTintColor;
+    _popupViewController.doneButtonText = _popupDoneButtonText;
+    
+    // Setup webview that will display click url content
+    _popupWebView = [[WKWebView alloc] init];
+    _popupWebView.navigationDelegate = self;
+    _popupWebView.translatesAutoresizingMaskIntoConstraints = NO;
+    [_popupWebView loadRequest:[NSURLRequest requestWithURL:url]];
+    
+    // Add webview programatically because storyboard method is broken until ios 11
+    [parentViewController presentViewController:_popupViewController animated:YES completion:^{
+        
+        // IBOutlets are nil until view controller is display, hence do all outlet related stuff in completion block
+        [_popupViewController.webViewContainerView addSubview:_popupWebView];
+        
+        [NSLayoutConstraint activateConstraints:@[
+                                                  [_popupWebView.leadingAnchor constraintEqualToAnchor:_popupViewController.webViewContainerView.leadingAnchor],
+                                                  [_popupWebView.trailingAnchor constraintEqualToAnchor:_popupViewController.webViewContainerView.trailingAnchor],
+                                                  [_popupWebView.topAnchor constraintEqualToAnchor:_popupViewController.webViewContainerView.topAnchor],
+                                                  [_popupWebView.bottomAnchor constraintEqualToAnchor:_popupViewController.webViewContainerView.bottomAnchor],
+                                                ]];
+    }];
 }
 
 - (void)reset {
@@ -369,6 +509,35 @@
             "</html>"];
     
     [_webView loadHTMLString:html baseURL:nil];
+}
+
+- (void)refreshPopupConstraints {
+    
+    if (_popupViewController == nil) {
+        return;
+    }
+    
+    // Popup view controllers resize to the content of its webview
+    _popupViewController.wrapperWidthConstraint.constant = _currentPopupContentWidth;
+    _popupViewController.wrapperHeightConstraint.constant = _currentPopupContentHeight;
+    
+    [_popupViewController.view layoutIfNeeded];
+}
+
+- (UIViewController *)parentViewController {
+    
+    // Try find the view controller that this view is in
+    UIResponder *responder = self;
+    
+    while (![responder isKindOfClass:[UIViewController class]]) {
+        responder = [responder nextResponder];
+        
+        if (nil == responder) {
+            break;
+        }
+    }
+    
+    return (UIViewController *)responder;
 }
 
 @end

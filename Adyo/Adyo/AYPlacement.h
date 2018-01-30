@@ -16,6 +16,7 @@
 @property (strong, nonatomic) NSString *creativeUrl;
 @property (assign, nonatomic) NSTimeInterval refreshAfter;
 @property (assign, nonatomic) NSString *thirdPartyImpressionUrl;
+@property (assign, nonatomic) NSString *target;
 
 - (void)recordImpression:(void (^)(void))success
                  failure:(void (^)(NSError *adyoError, NSError *thirdPartyError))failure;

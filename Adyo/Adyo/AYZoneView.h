@@ -25,6 +25,22 @@
 @interface AYZoneView : UIView
 
 @property (assign, nonatomic) BOOL detectSize;
+
+// Popup related
+@property (assign, nonatomic) NSUInteger popupInitialWidth;
+@property (assign, nonatomic) NSUInteger popupInitialHeight;
+@property (assign, nonatomic) BOOL popupScalesToContent;
+@property (assign, nonatomic) BOOL popupShowLoader;
+@property (strong, nonatomic) UIColor *popupOverlayColor;
+@property (strong, nonatomic) UIColor *popupBackgroundColor;
+@property (strong, nonatomic) UIColor *popupDoneButtonTintColor;
+@property (strong, nonatomic) UIColor *popupBarTintColor;
+@property (strong, nonatomic) NSString *popupDoneButtonText;
+@property (assign, nonatomic) float popupCornerRadius;
+@property (assign, nonatomic) UIModalPresentationStyle popupPresentationStyle;
+@property (assign, nonatomic) UIModalTransitionStyle popupTransitionStyle;
+
+
 @property (nonatomic, weak) id<AYZoneViewDelegate> delegate;
 
 - (void)requestPlacement:(AYPlacementRequestParams *)params;
