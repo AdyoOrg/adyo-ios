@@ -27,6 +27,7 @@
 @property (assign, nonatomic) BOOL detectSize;
 
 // Popup related
+@property (weak, nonatomic) UIViewController *popupPresentingViewController;
 @property (assign, nonatomic) NSUInteger popupInitialWidth;
 @property (assign, nonatomic) NSUInteger popupInitialHeight;
 @property (assign, nonatomic) BOOL popupScalesToContent;
@@ -39,6 +40,7 @@
 @property (assign, nonatomic) float popupCornerRadius;
 @property (assign, nonatomic) UIModalPresentationStyle popupPresentationStyle;
 @property (assign, nonatomic) UIModalTransitionStyle popupTransitionStyle;
+
 
 
 @property (nonatomic, weak) id<AYZoneViewDelegate> delegate;

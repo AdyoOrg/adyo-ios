@@ -413,7 +413,7 @@
     sf.delegate = self;
     
     // Get view controller this view is on
-    UIViewController *parentViewController = [self parentViewController];
+    UIViewController *parentViewController = _popupPresentingViewController ? _popupPresentingViewController : [self parentViewController];
     
     // If we cannot find it then just open using Safari
     if (!parentViewController) {
@@ -428,7 +428,7 @@
 - (void)openURLWithPopup:(NSURL *)url {
     
     // Get view controller this view is on
-    UIViewController *parentViewController = [self parentViewController];
+    UIViewController *parentViewController = _popupPresentingViewController ? _popupPresentingViewController : [self parentViewController];
 
     // If we cannot find it then just open using Safari
     if (!parentViewController) {
@@ -525,6 +525,7 @@
 }
 
 - (UIViewController *)parentViewController {
+    
     
     // Try find the view controller that this view is in
     UIResponder *responder = self;

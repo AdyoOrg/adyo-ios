@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		350DE62B201F8851004D968C /* AYPopupViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 350DE628201F8851004D968C /* AYPopupViewController.h */; };
 		350DE62C201F8851004D968C /* AYPopupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 350DE629201F8851004D968C /* AYPopupViewController.m */; };
-		350DE62D201F8851004D968C /* AYPopupViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 350DE62A201F8851004D968C /* AYPopupViewController.xib */; };
+		350DE62E2020421F004D968C /* AYPopupViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 350DE62A201F8851004D968C /* AYPopupViewController.xib */; };
 		3538159E1FB5A27600FF56E4 /* AYPlacement.h in Headers */ = {isa = PBXBuildFile; fileRef = 3538159C1FB5A27600FF56E4 /* AYPlacement.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3538159F1FB5A27600FF56E4 /* AYPlacement.m in Sources */ = {isa = PBXBuildFile; fileRef = 3538159D1FB5A27600FF56E4 /* AYPlacement.m */; };
 		353815A21FB5D1E000FF56E4 /* AYZoneView.h in Headers */ = {isa = PBXBuildFile; fileRef = 353815A01FB5D1E000FF56E4 /* AYZoneView.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -162,7 +162,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				350DE62D201F8851004D968C /* AYPopupViewController.xib in Resources */,
+				350DE62E2020421F004D968C /* AYPopupViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
