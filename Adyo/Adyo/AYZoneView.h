@@ -41,9 +41,8 @@
 @property (assign, nonatomic) UIModalPresentationStyle popupPresentationStyle;
 @property (assign, nonatomic) UIModalTransitionStyle popupTransitionStyle;
 
-
-
 @property (nonatomic, weak) id<AYZoneViewDelegate> delegate;
+@property (readonly, assign, nonatomic) BOOL paused;
 
 - (void)requestPlacement:(AYPlacementRequestParams *)params;
 - (void)reset;

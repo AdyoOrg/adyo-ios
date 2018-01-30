@@ -19,7 +19,7 @@
 
 @property (assign, nonatomic) BOOL loading;
 @property (assign, nonatomic) BOOL refreshScheduled;
-@property (assign, nonatomic) BOOL paused;
+@property (assign, nonatomic) BOOL appIsMinimized;
 
 @property (strong, nonatomic) AYPlacement *currentPlacement;
 @property (strong, nonatomic) AYPlacementRequestParams *currentParams;
@@ -196,6 +196,30 @@
     _popupShowLoader = YES;
     _popupInitialWidth = 400;
     _popupInitialHeight = 250;
+    
+    // Listen for app 'minimizing' determine whether to rotate
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(appDidMinimize)
+                                                 name:UIApplicationDidEnterBackgroundNotification
+                                               object: nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(appDidMinimize)
+                                                 name:UIApplicationWillResignActiveNotification
+                                               object: nil];
+    
+    // Listen for app 'maximizing' determine whether to rotate
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(appDidMaximize)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object: nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(appDidMaximize)
+                                                 name:UIApplicationDidBecomeActiveNotification
+                                               object: nil];
+    
+    
 }
 
 - (void)requestPlacement:(AYPlacementRequestParams *)params {
@@ -368,18 +392,16 @@
 
 - (void)refreshPlacement {
     
-    // Check if we are paused
-    if (_paused) {
+    // Check if we are not paused and app is open
+    if (!_paused && !_appIsMinimized) {
         
+        _refreshScheduled = NO;
+        
+        if (_currentParams) {
+            [self requestPlacement:_currentParams];
+        }
+    } else {
         [self performSelector:@selector(refreshPlacement) withObject:nil afterDelay:5];
-        return;
-    }
-    
-    _refreshScheduled = NO;
-    
-    if (_currentParams) {
-        
-        [self requestPlacement:_currentParams];
     }
 }
 
@@ -498,6 +520,8 @@
     
     _tapGestureRecognizer = nil;
     
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(refreshPlacement) object:nil];
+    
 //    NSString *html = [[NSString alloc] initWithFormat:
 //            @"<!DOCTYPE html>"
 //            "<html>"
@@ -526,6 +550,14 @@
 
 - (void)pause {
     _paused = YES;
+}
+
+- (void)appDidMinimize {
+    _appIsMinimized = YES;
+}
+
+- (void)appDidMaximize {
+    _appIsMinimized = NO;
 }
 
 - (void)refreshPopupConstraints {
