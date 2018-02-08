@@ -88,7 +88,7 @@
     if (_popupScalesToContent) {
         [_popupWebView evaluateJavaScript:@"document.body.scrollHeight" completionHandler:^(id _Nullable result, NSError * _Nullable error) {
             
-            _currentPopupContentHeight = [result floatValue];
+            _currentPopupContentHeight = [result floatValue] + 38; // Constant of 38 works well compared to using height of navigation bar (which is 44).
             [self refreshPopupConstraints];
         }];
         
@@ -223,7 +223,7 @@
 }
 
 - (void)requestPlacement:(AYPlacementRequestParams *)params {
-    
+   
     _paused = NO;
     _loading = YES;
     
@@ -237,7 +237,6 @@
     
     // Request placement using provided params
     [Adyo requestPlacement:params success:^(BOOL found, AYPlacement *placement) {
-        
         _currentPlacement = placement;
         _currentParams = params;
         
@@ -426,7 +425,7 @@
     if (!url) {
         return;
     }
-   
+    
     // Depending on the target of the placement, we either open the destination url via SFSafariViewController, in-app popup, or default change to browser
     if ([_currentPlacement.target isEqualToString:@"inside"]) {
         [self openURLInside:url];
