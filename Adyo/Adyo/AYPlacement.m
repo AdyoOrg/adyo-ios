@@ -31,10 +31,13 @@
         platform = @"iPod";
     }
     
+    NSString* sdkVersion = [[NSBundle bundleForClass:[AYPlacement class]] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
+    
     // Setup session with attributes in the header
     NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
     sessionConfig.HTTPAdditionalHeaders = @{
                                             @"User-Agent": userAgent,
+                                            @"X-Adyo-SDK-Version" : sdkVersion,
                                             @"X-Adyo-Platform": platform,
                                             @"X-Adyo-Model": model,
                                             @"X-Adyo-OS": @"iOS",
@@ -107,7 +110,7 @@
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat: @"<Placement: impressionUrl: %@, clickUrl: %@, creativeType: %@, creativeUrl: %@>, refreshAfter: %.0f, thirdPartyImpressionUrl :%@", _impressionUrl, _clickUrl, _creativeType, _creativeUrl, _refreshAfter, _thirdPartyImpressionUrl];
+    return [NSString stringWithFormat: @"<Placement: impressionUrl: %@, clickUrl: %@, creativeType: %@, creativeUrl: %@, creativeHtml: %@, refreshAfter: %.0f, thirdPartyImpressionUrl: %@, tagDomainUrl: %@>", _impressionUrl, _clickUrl, _creativeType, _creativeUrl, _creativeHtml, _refreshAfter, _thirdPartyImpressionUrl, _tagDomainUrl];
 }
 
 @end

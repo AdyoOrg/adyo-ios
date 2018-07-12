@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -23,14 +22,14 @@
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="i5M-Pr-FkT">
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NF4-4Y-N5n">
-                    <rect key="frame" x="20" y="192.5" width="335" height="250"/>
+                <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NF4-4Y-N5n">
+                    <rect key="frame" x="20" y="182.5" width="335" height="250"/>
                     <subviews>
-                        <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="M4n-S1-Yg1">
+                        <navigationBar contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M4n-S1-Yg1">
                             <rect key="frame" x="0.0" y="0.0" width="335" height="44"/>
                             <items>
                                 <navigationItem id="uoP-7Z-b98">
@@ -42,10 +41,10 @@
                                 </navigationItem>
                             </items>
                         </navigationBar>
-                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="RYE-Rq-ml6">
+                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" insetsLayoutMarginsFromSafeArea="NO" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="RYE-Rq-ml6">
                             <rect key="frame" x="157" y="136.5" width="20" height="20"/>
                         </activityIndicatorView>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cj4-xp-2aE">
+                        <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cj4-xp-2aE">
                             <rect key="frame" x="0.0" y="44" width="335" height="206"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </view>
@@ -74,14 +73,13 @@
             </subviews>
             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.79929577464788737" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="NF4-4Y-N5n" secondAttribute="trailing" constant="20" id="D3k-eE-pDm"/>
-                <constraint firstItem="Q5M-cg-NOt" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="NF4-4Y-N5n" secondAttribute="bottom" constant="20" id="VmP-XV-Jl2"/>
-                <constraint firstItem="NF4-4Y-N5n" firstAttribute="top" relation="greaterThanOrEqual" secondItem="Q5M-cg-NOt" secondAttribute="top" constant="20" id="f8p-lW-udL"/>
-                <constraint firstItem="NF4-4Y-N5n" firstAttribute="centerY" secondItem="Q5M-cg-NOt" secondAttribute="centerY" constant="-26" id="jp4-Hp-q6u"/>
-                <constraint firstItem="NF4-4Y-N5n" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="20" id="qkL-6s-kMd"/>
-                <constraint firstItem="NF4-4Y-N5n" firstAttribute="centerX" secondItem="Q5M-cg-NOt" secondAttribute="centerX" id="xlS-7o-FDc"/>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="NF4-4Y-N5n" secondAttribute="trailing" constant="20" id="D3k-eE-pDm"/>
+                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="NF4-4Y-N5n" secondAttribute="bottom" constant="20" id="VmP-XV-Jl2"/>
+                <constraint firstItem="NF4-4Y-N5n" firstAttribute="top" relation="greaterThanOrEqual" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="20" id="f8p-lW-udL"/>
+                <constraint firstItem="NF4-4Y-N5n" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" constant="-26" id="jp4-Hp-q6u"/>
+                <constraint firstItem="NF4-4Y-N5n" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="qkL-6s-kMd"/>
+                <constraint firstItem="NF4-4Y-N5n" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="xlS-7o-FDc"/>
             </constraints>
-            <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
             <point key="canvasLocation" x="34.5" y="104.5"/>
         </view>
     </objects>

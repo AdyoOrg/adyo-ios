@@ -67,6 +67,7 @@
     }
     
     NSData *postData = [NSJSONSerialization dataWithJSONObject:data options:0 error:nil];
+    NSString* sdkVersion = [[NSBundle bundleForClass:[Adyo class]] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
     
     // Now setup the request
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:BASE_URL]];
@@ -75,14 +76,14 @@
     [request setHTTPMethod:@"POST"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:sdkVersion forHTTPHeaderField:@"X-Adyo-SDK-Version"];
     [request setHTTPBody: postData];
     
     [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         
         if (error) {
-            
+        
             if (failure) {
-                
                 // Back to main thread
                 dispatch_async(dispatch_get_main_queue(), ^{
                     failure(error);
@@ -111,6 +112,10 @@
         
         if (![result[@"found"] boolValue]) {
             
+#ifdef D
+            NSLog(@"[Adyo] - Placement not found.");
+#endif
+            
             if (success) {
                 
                 // Back to main thread
@@ -127,9 +132,21 @@
         placement.impressionUrl = result[@"impression_url"];
         placement.clickUrl = result[@"click_url"];
         placement.creativeType = result[@"creative_type"];
-        placement.creativeUrl = result[@"creative_url"];
         placement.refreshAfter = [result[@"refresh_after"] doubleValue];
         placement.target = result[@"app_target"];
+        
+        // Optional properties depending on creative type
+        if ([result objectForKey:@"creative_url"] != nil) {
+            placement.creativeUrl = result[@"creative_url"];
+        }
+        
+        if ([result objectForKey:@"creative_html"] != nil) {
+            placement.creativeHtml = result[@"creative_html"];
+        }
+        
+        if ([result objectForKey:@"tag_domain_url"] != nil) {
+            placement.tagDomainUrl = [NSURL URLWithString:result[@"tag_domain_url"]];
+        }
         
         if (success) {
             

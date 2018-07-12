@@ -17,6 +17,7 @@
 @property (assign, nonatomic) NSUInteger width;
 @property (assign, nonatomic) NSUInteger height;
 @property (strong, nonatomic) NSDictionary *custom;
+@property (strong, nonatomic) NSArray<NSString *> *creativeTypes;
 
 - (id)initWithNetworkId:(NSUInteger)networkId
                  zoneId:(NSUInteger)zoneId;
@@ -44,6 +45,15 @@
                   width:(NSUInteger)width
                  height:(NSUInteger)height
                  custom:(NSDictionary *)custom;
+
+- (id)initWithNetworkId:(NSUInteger)networkId
+                 zoneId:(NSUInteger)zoneId
+                 userId:(NSString *)userId
+               keywords:(NSArray<NSString *> *)keywords
+                  width:(NSUInteger)width
+                 height:(NSUInteger)height
+                 custom:(NSDictionary *)custom
+          creativeTypes:(NSArray<NSString *> *)creativeTypes;
 
 
 @end

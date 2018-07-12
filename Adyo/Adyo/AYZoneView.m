@@ -235,11 +235,14 @@
         params.height = _webView.frame.size.height;
     }
     
+    // We only want to request placements for creative we support
+    params.creativeTypes = @[@"image", @"rich-media", @"tag"];
+    
     // Request placement using provided params
     [Adyo requestPlacement:params success:^(BOOL found, AYPlacement *placement) {
         _currentPlacement = placement;
         _currentParams = params;
-        
+       
         if (!found) {
             
             if ([_delegate respondsToSelector:@selector(zoneView:didReceivePlacement:placement:)]) {
@@ -250,7 +253,7 @@
         }
         
         // Depending on type, use different HTML for our webview
-        NSString *html;
+        NSString *html = @"";
 
         if ([placement.creativeType isEqualToString:@"image"]) {
             
@@ -287,7 +290,8 @@
                                    "<body id=\"page\">"
                                    "<img src='", placement.creativeUrl, @"'/>"
                                    "</body></html>"];
-        } else {
+            
+        } else if ([placement.creativeType isEqualToString:@"rich-media"]) {
             
             html = [[NSString alloc] initWithFormat:@"%@%@%@",
                               @"<!DOCTYPE html>"
@@ -315,11 +319,40 @@
                               "<body id=\"page\">"
                               "<iframe src='", placement.creativeUrl, @"' frameBorder=\"0\"></iframe>"
                               "</body></html>"];
+            
+        } else if ([placement.creativeType isEqualToString:@"tag"]) {
+            
+            html = [[NSString alloc] initWithFormat:@"%@%@%@",
+                    @"<!DOCTYPE html>"
+                    "<html>"
+                    "<head>"
+                    "<meta name=\"viewport\" content=\"initial-scale=1.0\" />"
+                    "<meta charset=\"UTF-8\">"
+                    "<style type=\"text/css\">"
+                    "html{margin:0;padding:0;}"
+                    "body {"
+                    "background: none;"
+                    "margin: 0;"
+                    "padding: 0;"
+                    "}"
+                    "iframe {"
+                    "width: 100%;"
+                    "height: 100%;"
+                    "background: none;"
+                    "-webkit-touch-callout: none !important;"
+                    "-webkit-user-select: none !important;"
+                    "-webkit-tap-highlight-color: rgba(0,0,0,0) !important;"
+                    "}"
+                    "</style>"
+                    "</head>"
+                    "<body id=\"page\">"
+                    , placement.creativeHtml,
+                    @"</body></html>"];
         }
         
         // Load HTML into the webview on the main thread
         dispatch_async(dispatch_get_main_queue(), ^{
-            [_webView loadHTMLString:html baseURL:nil];
+            [_webView loadHTMLString:html baseURL:placement.tagDomainUrl];
         });
         
     } failure:^(NSError *error) {
