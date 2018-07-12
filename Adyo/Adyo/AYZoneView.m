@@ -88,13 +88,13 @@
     if (_popupScalesToContent) {
         [_popupWebView evaluateJavaScript:@"document.body.scrollHeight" completionHandler:^(id _Nullable result, NSError * _Nullable error) {
             
-            _currentPopupContentHeight = [result floatValue] + 38; // Constant of 38 works well compared to using height of navigation bar (which is 44).
+            self.currentPopupContentHeight = [result floatValue] + 38; // Constant of 38 works well compared to using height of navigation bar (which is 44).
             [self refreshPopupConstraints];
         }];
         
         [_popupWebView evaluateJavaScript:@"document.body.scrollWidth" completionHandler:^(id _Nullable result, NSError * _Nullable error) {
             
-            _currentPopupContentWidth = [result floatValue];
+            self.currentPopupContentWidth = [result floatValue];
             [self refreshPopupConstraints];
         }];
     }
@@ -240,13 +240,13 @@
     
     // Request placement using provided params
     [Adyo requestPlacement:params success:^(BOOL found, AYPlacement *placement) {
-        _currentPlacement = placement;
-        _currentParams = params;
+        self.currentPlacement = placement;
+        self.currentParams = params;
        
         if (!found) {
             
-            if ([_delegate respondsToSelector:@selector(zoneView:didReceivePlacement:placement:)]) {
-                [_delegate zoneView:self didReceivePlacement:NO placement:nil];
+            if ([self.delegate respondsToSelector:@selector(zoneView:didReceivePlacement:placement:)]) {
+                [self.delegate zoneView:self didReceivePlacement:NO placement:nil];
             }
             
             return;
@@ -352,15 +352,15 @@
         
         // Load HTML into the webview on the main thread
         dispatch_async(dispatch_get_main_queue(), ^{
-            [_webView loadHTMLString:html baseURL:placement.tagDomainUrl];
+            [self.webView loadHTMLString:html baseURL:placement.tagDomainUrl];
         });
         
     } failure:^(NSError *error) {
         
-        _loading = NO;
+        self.loading = NO;
         
-        if ([_delegate respondsToSelector:@selector(zoneView:didFailToReceivePlacement:)]) {
-            [_delegate zoneView:self didFailToReceivePlacement:error];
+        if ([self.delegate respondsToSelector:@selector(zoneView:didFailToReceivePlacement:)]) {
+            [self.delegate zoneView:self didFailToReceivePlacement:error];
         }
     }];
 }
@@ -410,7 +410,7 @@
                 _refreshScheduled = YES;
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self performSelector:@selector(refreshPlacement) withObject:nil afterDelay:_currentPlacement.refreshAfter];
+                    [self performSelector:@selector(refreshPlacement) withObject:nil afterDelay:self.currentPlacement.refreshAfter];
                 });
             }
         }
@@ -527,13 +527,13 @@
     [parentViewController presentViewController:_popupViewController animated:YES completion:^{
         
         // IBOutlets are nil until view controller is display, hence do all outlet related stuff in completion block
-        [_popupViewController.webViewContainerView addSubview:_popupWebView];
+        [self.popupViewController.webViewContainerView addSubview:self.popupWebView];
         
         [NSLayoutConstraint activateConstraints:@[
-                                                  [_popupWebView.leadingAnchor constraintEqualToAnchor:_popupViewController.webViewContainerView.leadingAnchor],
-                                                  [_popupWebView.trailingAnchor constraintEqualToAnchor:_popupViewController.webViewContainerView.trailingAnchor],
-                                                  [_popupWebView.topAnchor constraintEqualToAnchor:_popupViewController.webViewContainerView.topAnchor],
-                                                  [_popupWebView.bottomAnchor constraintEqualToAnchor:_popupViewController.webViewContainerView.bottomAnchor],
+                                                  [self.popupWebView.leadingAnchor constraintEqualToAnchor:self.popupViewController.webViewContainerView.leadingAnchor],
+                                                  [self.popupWebView.trailingAnchor constraintEqualToAnchor:self.popupViewController.webViewContainerView.trailingAnchor],
+                                                  [self.popupWebView.topAnchor constraintEqualToAnchor:self.popupViewController.webViewContainerView.topAnchor],
+                                                  [self.popupWebView.bottomAnchor constraintEqualToAnchor:self.popupViewController.webViewContainerView.bottomAnchor],
                                                 ]];
     }];
 }
