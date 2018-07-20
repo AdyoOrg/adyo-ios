@@ -70,6 +70,8 @@
 
 - (void)dealloc {
     [_webView removeObserver:self forKeyPath:@"loading"];
+    _webView.scrollView.delegate = nil;
+    _webView.navigationDelegate = nil;
 }
 
 #pragma mark - WKNavigationDelegate
