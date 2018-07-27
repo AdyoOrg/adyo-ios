@@ -161,6 +161,7 @@
 
 - (void)setup {
     
+    self.userInteractionEnabled = NO;
     self.translatesAutoresizingMaskIntoConstraints = NO;
     
     // Setup webview
@@ -242,6 +243,13 @@
     
     // Request placement using provided params
     [Adyo requestPlacement:params success:^(BOOL found, AYPlacement *placement) {
+        
+        // If no placement found AND there is no placement from previous request, then disable interaction so touches can pass through it
+        if (!found && !self.currentPlacement) {
+            self.userInteractionEnabled = NO;
+        }
+        
+        
         self.currentPlacement = placement;
         self.currentParams = params;
        
@@ -382,6 +390,9 @@
             [_webView evaluateJavaScript:@"document.body.style.webkitUserSelect='none'" completionHandler:nil];
             
             _loading = NO;
+            
+            // Enable interaction again so taps don't pass through it
+            self.userInteractionEnabled = YES;
             
             // If the placement has a click url, we need to add a tap gesture recognizer to the web view a whole to intercept taps
             if (_tapGestureRecognizer) {
@@ -543,6 +554,7 @@
 - (void)reset {
     
     // We simply reset the zone view to its initial state before the request
+    self.userInteractionEnabled = NO;
     _currentPlacement = nil;
     _currentParams = nil;
     _loading = NO;
