@@ -226,11 +226,10 @@
     
 }
 
-- (void)requestPlacement:(AYPlacementRequestParams *)params {
+- (void)requestSinglePlacement:(AYPlacementRequestParams *)params {
    
     _paused = NO;
     _loading = YES;
-    _availableParams = nil; // Incase switching from random params to single params.
     
     // If banner view property 'determineSize' is true, we need to determine the size right now depending on the current size of the webview
     if (_detectSize) {
@@ -376,6 +375,14 @@
     }];
 }
 
+
+- (void)requestPlacement:(AYPlacementRequestParams *)params {
+    
+    _availableParams = nil; // Incase switching from random params to single params.
+    
+    [self requestSinglePlacement:params];
+}
+
 - (void)requestRandomPlacement:(NSArray<AYPlacementRequestParams *> *)params {
     
     _availableParams = params;
@@ -388,7 +395,7 @@
 
     AYPlacementRequestParams *randomParams = [self getRandomAvailableParams];
     
-    [self requestPlacement:randomParams];
+    [self requestSinglePlacement:randomParams];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath
@@ -460,9 +467,9 @@
         
         // Use current params or random available params if set
         if (_availableParams && _availableParams.count > 0) {
-            [self requestPlacement:[self getRandomAvailableParams]];
+            [self requestSinglePlacement:[self getRandomAvailableParams]];
         } else if (_currentParams) {
-            [self requestPlacement:_currentParams];
+            [self requestSinglePlacement:_currentParams];
         }
     } else {
         [self performSelector:@selector(refreshPlacement) withObject:nil afterDelay:5];
