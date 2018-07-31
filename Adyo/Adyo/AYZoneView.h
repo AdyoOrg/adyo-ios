@@ -45,6 +45,7 @@
 @property (readonly, assign, nonatomic) BOOL paused;
 
 - (void)requestPlacement:(AYPlacementRequestParams *)params;
+- (void)requestRandomPlacement:(NSArray<AYPlacementRequestParams *>*)params;
 - (void)reset;
 - (void)resume;
 - (void)pause;

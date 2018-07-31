@@ -23,6 +23,7 @@
 
 @property (strong, nonatomic) AYPlacement *currentPlacement;
 @property (strong, nonatomic) AYPlacementRequestParams *currentParams;
+@property (strong, nonatomic) NSArray<AYPlacementRequestParams *> *availableParams;
 @property (strong, nonatomic) UITapGestureRecognizer *tapGestureRecognizer;
 
 // Popup related
@@ -229,6 +230,7 @@
    
     _paused = NO;
     _loading = YES;
+    _availableParams = nil; // Incase switching from random params to single params.
     
     // If banner view property 'determineSize' is true, we need to determine the size right now depending on the current size of the webview
     if (_detectSize) {
@@ -248,7 +250,6 @@
         if (!found && !self.currentPlacement) {
             self.userInteractionEnabled = NO;
         }
-        
         
         self.currentPlacement = placement;
         self.currentParams = params;
@@ -375,6 +376,21 @@
     }];
 }
 
+- (void)requestRandomPlacement:(NSArray<AYPlacementRequestParams *> *)params {
+    
+    _availableParams = params;
+    
+    // If provided params is empty, do nothing
+    if (_availableParams == nil || _availableParams.count == 0) {
+        
+        return;
+    }
+
+    AYPlacementRequestParams *randomParams = [self getRandomAvailableParams];
+    
+    [self requestPlacement:randomParams];
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object change:(NSDictionary *)change
                        context:(void *)context {
@@ -442,7 +458,10 @@
         
         _refreshScheduled = NO;
         
-        if (_currentParams) {
+        // Use current params or random available params if set
+        if (_availableParams && _availableParams.count > 0) {
+            [self requestPlacement:[self getRandomAvailableParams]];
+        } else if (_currentParams) {
             [self requestPlacement:_currentParams];
         }
     } else {
@@ -557,6 +576,7 @@
     self.userInteractionEnabled = NO;
     _currentPlacement = nil;
     _currentParams = nil;
+    _availableParams = nil;
     _loading = NO;
     _refreshScheduled = NO;
     
@@ -634,6 +654,13 @@
     }
     
     return (UIViewController *)responder;
+}
+
+- (AYPlacementRequestParams *)getRandomAvailableParams {
+    
+    NSUInteger randomIndex = arc4random() % _availableParams.count;
+    
+    return [_availableParams objectAtIndex:randomIndex];
 }
 
 @end
