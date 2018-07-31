@@ -88,7 +88,7 @@ typedef NS_ENUM(NSInteger, CreativeType) {
             }];
             
         } else {
-            NSLog(@"Received placement on Zone #1. Refresh is 0 thus this    ad will stay.");
+            NSLog(@"Received placement on Zone #1. Refresh is 0 thus this ad will stay.");
         }
         
     } else {
