@@ -617,8 +617,14 @@
 //    [_webView loadHTMLString:html baseURL:nil];
 }
 
-- (void)resume {
+- (void)resume:(BOOL)immediately {
     _paused = NO;
+    
+    // If resume immediately, cancel refresh check and refresh
+    if (immediately) {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(refreshPlacement) object:nil];
+        [self refreshPlacement];
+    }
 }
 
 - (void)pause {
