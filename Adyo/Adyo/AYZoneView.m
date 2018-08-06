@@ -594,27 +594,30 @@
     _tapGestureRecognizer = nil;
     
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(refreshPlacement) object:nil];
+}
+
+- (void)clear {
     
-//    NSString *html = [[NSString alloc] initWithFormat:
-//            @"<!DOCTYPE html>"
-//            "<html>"
-//            "<head>"
-//            "<meta charset=\"UTF-8\">"
-//            "<meta name=\"viewport\" content=\"initial-scale=1.0\"/>"
-//            "<style type=\"text/css\">"
-//            "html{margin:0;padding:0;}"
-//            "body {"
-//            "background: none;"
-//            "-webkit-touch-callout: none;"
-//            "-webkit-user-select: none;"
-//            "}"
-//            "</style>"
-//            "</head>"
-//            "<body>"
-//            "</body>"
-//            "</html>"];
-//    
-//    [_webView loadHTMLString:html baseURL:nil];
+    NSString *html = [[NSString alloc] initWithFormat:
+            @"<!DOCTYPE html>"
+            "<html>"
+            "<head>"
+            "<meta charset=\"UTF-8\">"
+            "<meta name=\"viewport\" content=\"initial-scale=1.0\"/>"
+            "<style type=\"text/css\">"
+            "html{margin:0;padding:0;}"
+            "body {"
+            "background: none;"
+            "-webkit-touch-callout: none;"
+            "-webkit-user-select: none;"
+            "}"
+            "</style>"
+            "</head>"
+            "<body>"
+            "</body>"
+            "</html>"];
+
+    [_webView loadHTMLString:html baseURL:nil];
 }
 
 - (void)resume:(BOOL)immediately {

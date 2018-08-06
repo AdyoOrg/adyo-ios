@@ -49,5 +49,6 @@
 - (void)reset;
 - (void)resume:(BOOL)immediately;
 - (void)pause;
+- (void)clear;
 
 @end
