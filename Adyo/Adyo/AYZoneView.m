@@ -13,7 +13,7 @@
 @import WebKit;
 @import SafariServices;
 
-@interface AYZoneView() <WKNavigationDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate, SFSafariViewControllerDelegate>
+@interface AYZoneView() <WKNavigationDelegate, WKUIDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate, SFSafariViewControllerDelegate>
 
 @property (strong, nonatomic) WKWebView *webView;
 
@@ -73,6 +73,7 @@
     [_webView removeObserver:self forKeyPath:@"loading"];
     _webView.scrollView.delegate = nil;
     _webView.navigationDelegate = nil;
+    _webView.UIDelegate = nil;
 }
 
 #pragma mark - WKNavigationDelegate
@@ -130,6 +131,19 @@
     }
 }
 
+#pragma mark - WKUIDelegate
+
+- (WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures {
+    
+    // Needed to open anchor tags with '_blank' targets
+    if (!navigationAction.targetFrame.isMainFrame) {
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+        [[UIApplication sharedApplication] openURL:[navigationAction.request URL]];
+    }
+    
+    return nil;
+}
+
 #pragma mark - UIGestureRecognizerDelegate
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
@@ -175,6 +189,7 @@
     _webView.opaque = NO;
     _webView.backgroundColor = [UIColor clearColor];
     _webView.navigationDelegate = self;
+    _webView.UIDelegate = self;
     
     [self addSubview:_webView];
     
@@ -268,96 +283,55 @@
         if ([placement.creativeType isEqualToString:@"image"]) {
             
             html = [[NSString alloc] initWithFormat:@"%@%@%@",
-                                   @"<!DOCTYPE html>"
-                                   "<html>"
-                                   "<head>"
-                                   "<meta charset=\"UTF-8\">"
-                                   "<meta name=\"viewport\" content=\"initial-scale=1.0\"/>"
-                                   "<style type=\"text/css\">"
-                                   "html{margin:0;padding:0;}"
-                                   "body {"
-                                   "margin: 0;"
-                                   "padding: 0;"
-                                   "font-size: 90%;"
-                                   "line-height: 1.6;"
-                                   "background: none;"
-                                   "-webkit-touch-callout: none;"
-                                   "-webkit-user-select: none;"
-                                   "}"
-                                   "img {"
-                                   "position: absolute;"
-                                   "top: 0;"
-                                   "bottom: 0;"
-                                   "left: 0;"
-                                   "right: 0;"
-                                   "margin: auto;"
-                                   "max-width: 100%;"
-                                   "max-height: 100%;"
-                                   "background: none;"
-                                   "}"
-                                   "</style>"
-                                   "</head>"
-                                   "<body id=\"page\">"
-                                   "<img src='", placement.creativeUrl, @"'/>"
-                                   "</body></html>"];
+                       @"<!DOCTYPE html>"
+                       "<html>"
+                       "<head>"
+                       "<meta charset=\"UTF-8\">"
+                       "<meta name=\"viewport\" content=\"initial-scale=1.0\"/>"
+                       "<style type=\"text/css\">"
+                       "html {margin:0;padding:0;}"
+                       "body {margin: 0; padding: 0; font-size: 90%; line-height: 1.6; background: none; -webkit-touch-callout: none; -webkit-user-select: none;}"
+                       "img {position: absolute; top: 0; bottom: 0; left: 0; right: 0; margin: auto; max-width: 100%; max-height: 100%; background: none}"
+                       "</style>"
+                       "</head>"
+                       "<body id=\"page\">"
+                       "<img src='", placement.creativeUrl, @"'/>"
+                       "</body></html>"];
             
         } else if ([placement.creativeType isEqualToString:@"rich-media"]) {
             
             html = [[NSString alloc] initWithFormat:@"%@%@%@",
-                              @"<!DOCTYPE html>"
-                              "<html>"
-                              "<head>"
-                              "<meta name=\"viewport\" content=\"initial-scale=1.0\" />"
-                              "<meta charset=\"UTF-8\">"
-                              "<style type=\"text/css\">"
-                              "html{margin:0;padding:0;}"
-                              "body {"
-                              "background: none;"
-                              "margin: 0;"
-                              "padding: 0;"
-                              "}"
-                              "iframe {"
-                              "width: 100%;"
-                              "height: 100%;"
-                              "background: none;"
-                              "-webkit-touch-callout: none !important;"
-                              "-webkit-user-select: none !important;"
-                              "-webkit-tap-highlight-color: rgba(0,0,0,0) !important;"
-                              "}"
-                              "</style>"
-                              "</head>"
-                              "<body id=\"page\">"
-                              "<iframe src='", placement.creativeUrl, @"' frameBorder=\"0\"></iframe>"
-                              "</body></html>"];
+                      @"<!DOCTYPE html>"
+                      "<html>"
+                      "<head>"
+                      "<meta name=\"viewport\" content=\"initial-scale=1.0\"/>"
+                      "<meta charset=\"UTF-8\">"
+                      "<style type=\"text/css\">"
+                      "html {margin:0;padding:0;}"
+                      "body {background: none; margin: 0; padding: 0}"
+                      "iframe {width: 100%; height: 100%; background: none; -webkit-touch-callout: none !important; -webkit-user-select: none !important; -webkit-tap-highlight-color: rgba(0,0,0,0) !important}"
+                      "</style>"
+                      "</head>"
+                      "<body id=\"page\">"
+                      "<iframe src='", placement.creativeUrl, @"' frameBorder=\"0\"></iframe>"
+                      "</body></html>"];
             
         } else if ([placement.creativeType isEqualToString:@"tag"]) {
             
             html = [[NSString alloc] initWithFormat:@"%@%@%@",
-                    @"<!DOCTYPE html>"
-                    "<html>"
-                    "<head>"
-                    "<meta name=\"viewport\" content=\"initial-scale=1.0\" />"
-                    "<meta charset=\"UTF-8\">"
-                    "<style type=\"text/css\">"
-                    "html{margin:0;padding:0;}"
-                    "body {"
-                    "background: none;"
-                    "margin: 0;"
-                    "padding: 0;"
-                    "}"
-                    "iframe {"
-                    "width: 100%;"
-                    "height: 100%;"
-                    "background: none;"
-                    "-webkit-touch-callout: none !important;"
-                    "-webkit-user-select: none !important;"
-                    "-webkit-tap-highlight-color: rgba(0,0,0,0) !important;"
-                    "}"
-                    "</style>"
-                    "</head>"
-                    "<body id=\"page\">"
-                    , placement.creativeHtml,
-                    @"</body></html>"];
+                        @"<!DOCTYPE html>"
+                        "<html>"
+                        "<head>"
+                        "<meta name=\"viewport\" content=\"initial-scale=1.0\"/>"
+                        "<meta charset=\"UTF-8\">"
+                        "<style type=\"text/css\">"
+                        "html{margin:0;padding:0; height:100%}"
+                        "body {background: none; margin: 0; padding: 0; height:100%}"
+                        "</style>"
+                        "</head>"
+                        "<body id=\"page\">"
+                        , placement.creativeHtml,
+                        @"</body></html>"];
         }
         
         // Load HTML into the webview on the main thread

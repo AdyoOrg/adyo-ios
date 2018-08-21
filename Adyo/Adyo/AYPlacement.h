@@ -18,7 +18,7 @@
 @property (assign, nonatomic) NSTimeInterval refreshAfter;
 @property (assign, nonatomic) NSString *thirdPartyImpressionUrl;
 @property (assign, nonatomic) NSString *target;
-@property (assign, nonatomic) NSURL *tagDomainUrl;
+@property (strong, nonatomic) NSURL *tagDomainUrl;
 
 - (void)recordImpression:(void (^)(void))success
                  failure:(void (^)(NSError *adyoError, NSError *thirdPartyError))failure;

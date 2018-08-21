@@ -136,16 +136,16 @@
         placement.target = result[@"app_target"];
         
         // Optional properties depending on creative type
-        if ([result objectForKey:@"creative_url"] != nil) {
+        if ([result objectForKey:@"creative_url"] != nil && ![[result objectForKey:@"creative_url"] isKindOfClass:[NSNull class]]) {
             placement.creativeUrl = result[@"creative_url"];
         }
         
-        if ([result objectForKey:@"creative_html"] != nil) {
+        if ([result objectForKey:@"creative_html"] != nil && ![[result objectForKey:@"creative_html"] isKindOfClass:[NSNull class]]) {
             placement.creativeHtml = result[@"creative_html"];
         }
         
-        if ([result objectForKey:@"tag_domain_url"] != nil) {
-            placement.tagDomainUrl = [NSURL URLWithString:result[@"tag_domain_url"]];
+        if ([result objectForKey:@"tag_domain"] != nil && ![[result objectForKey:@"tag_domain"] isKindOfClass:[NSNull class]]) {
+            placement.tagDomainUrl = [NSURL URLWithString:result[@"tag_domain"]];
         }
         
         if (success) {
