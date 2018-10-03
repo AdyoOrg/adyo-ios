@@ -16,8 +16,8 @@
 @property (strong, nonatomic) NSString *creativeUrl;
 @property (strong, nonatomic) NSString *creativeHtml;
 @property (assign, nonatomic) NSTimeInterval refreshAfter;
-@property (assign, nonatomic) NSString *thirdPartyImpressionUrl;
-@property (assign, nonatomic) NSString *target;
+@property (strong, nonatomic) NSString *thirdPartyImpressionUrl;
+@property (strong, nonatomic) NSString *target;
 @property (strong, nonatomic) NSURL *tagDomainUrl;
 
 - (void)recordImpression:(void (^)(void))success
