@@ -453,7 +453,7 @@
 - (void)webViewTapped {
     
     // Don't do anything if click url is null
-    if (!_currentPlacement.clickUrl || _currentPlacement.clickUrl.length == 0) {
+    if ([_currentPlacement.clickUrl isKindOfClass:[NSNull class]] || !_currentPlacement.clickUrl || _currentPlacement.clickUrl.length == 0) {
         return;
     }
     
