@@ -48,6 +48,7 @@
 - (void)requestRandomPlacement:(NSArray<AYPlacementRequestParams *>*)params;
 - (void)reset;
 - (void)resume:(BOOL)immediately;
+- (void)resumeWithDelay:(NSTimeInterval)interval;
 - (void)pause;
 - (void)clear;
 

@@ -604,6 +604,15 @@
     }
 }
 
+- (void)resumeWithDelay:(NSTimeInterval)interval {
+    
+    _paused = NO;
+    
+    // Cancel refresh check and refresh after provided interval
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(refreshPlacement) object:nil];
+    [self performSelector:@selector(refreshPlacement) withObject:nil afterDelay:interval];
+}
+
 - (void)pause {
     _paused = YES;
 }
