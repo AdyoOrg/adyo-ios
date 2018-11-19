@@ -29,6 +29,8 @@
         platform = @"iPhone";
     } else if ([model containsString:@"iPod"]) {
         platform = @"iPod";
+    } else {
+        platform = @"Unknown";
     }
     
     NSString* sdkVersion = [[NSBundle bundleForClass:[AYPlacement class]] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];

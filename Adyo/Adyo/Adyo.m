@@ -7,6 +7,7 @@
 //
 
 #import "Adyo.h"
+#import "UIDeviceHardware.h"
 
 @import AdSupport;
 
@@ -68,6 +69,18 @@
     
     NSData *postData = [NSJSONSerialization dataWithJSONObject:data options:0 error:nil];
     NSString* sdkVersion = [[NSBundle bundleForClass:[Adyo class]] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
+    NSString *model = [UIDeviceHardware platformString];
+    NSString *platform = nil;
+    
+    if ([model containsString:@"iPad"]) {
+        platform = @"iPad";
+    } else if ([model containsString:@"iPhone"]) {
+        platform = @"iPhone";
+    } else if ([model containsString:@"iPod"]) {
+        platform = @"iPod";
+    } else {
+        platform = @"Unknown";
+    }
     
     // Now setup the request
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:BASE_URL]];
@@ -77,6 +90,10 @@
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     [request setValue:sdkVersion forHTTPHeaderField:@"X-Adyo-SDK-Version"];
+    [request setValue:platform forHTTPHeaderField:@"X-Adyo-Platform"];
+    [request setValue:model forHTTPHeaderField:@"X-Adyo-Model"];
+    [request setValue:@"iOS" forHTTPHeaderField:@"X-Adyo-OS"];
+    [request setValue:[[UIDevice currentDevice] systemVersion] forHTTPHeaderField:@"X-Adyo-OS-Version"];
     [request setHTTPBody: postData];
     
     [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
