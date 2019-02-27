@@ -277,6 +277,50 @@
             return;
         }
         
+        // Ask delegate whether to continue loading and displaying the placement based on placement details (e.g metadata)
+        if ([self.delegate respondsToSelector:@selector(zoneView:shouldDisplayPlacement:)]) {
+    
+            BOOL shouldDisplay = [self.delegate zoneView:self shouldDisplayPlacement:placement];
+            
+            if (!shouldDisplay) {
+                
+                // Ask delegate whether to record the impression even though we are not going to continue
+                BOOL shouldRecordImpression = YES;
+                
+                if ([self.delegate respondsToSelector:@selector(zoneView:shouldRecordImpressionForPlacement:)]) {
+                    shouldRecordImpression = [self.delegate zoneView:self shouldRecordImpressionForPlacement:self.currentPlacement];
+                }
+                
+                if (shouldRecordImpression) {
+                    [self.currentPlacement recordImpression:nil failure:nil];
+                }
+                
+                // Ask delegate whether to refresh even through we are not going to continue
+                BOOL shouldRefresh = YES;
+                
+                if ([self.delegate respondsToSelector:@selector(zoneView:shouldRefreshForPlacement:)]) {
+                    shouldRefresh = [self.delegate zoneView:self shouldRefreshForPlacement:self.currentPlacement];
+                }
+                
+                if (shouldRefresh) {
+                
+                    // Check if we need to request a new placement in a few seconds (also don't fire a new refresh if one is already being fired
+                    if (self.currentPlacement.refreshAfter > 0 && !self.refreshScheduled) {
+                        
+                        self.refreshScheduled = YES;
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self performSelector:@selector(refreshPlacement) withObject:nil afterDelay:self.currentPlacement.refreshAfter];
+                        });
+                    }
+                }
+                
+                return;
+            }
+        } else {
+            NSLog(@"NO RESPONS!!!!");
+        }
+        
         // Depending on type, use different HTML for our webview
         NSString *html = @"";
 
@@ -411,17 +455,36 @@
                 [_delegate zoneView:self didReceivePlacement:YES placement:_currentPlacement];
             }
             
-            // Record the impression on the placement
-            [_currentPlacement recordImpression:nil failure:nil];
+            // Record the impression on the placement depending on delegate
+            BOOL shouldRecordImpression = YES;
             
-            // Check if need to request a new placement in a few seconds (also don't fire a new refresh if one is already being fired
-            if (_currentPlacement.refreshAfter > 0 && !_refreshScheduled) {
+            if ([self.delegate respondsToSelector:@selector(zoneView:shouldRecordImpressionForPlacement:)]) {
                 
-                _refreshScheduled = YES;
+                shouldRecordImpression = [self.delegate zoneView:self shouldRecordImpressionForPlacement:_currentPlacement];
+            }
+            
+            if (shouldRecordImpression) {
+                [_currentPlacement recordImpression:nil failure:nil];
+            }
+            
+            // Ask delegate whether to refresh even through we are not going to continue
+            BOOL shouldRefresh = YES;
+            
+            if ([self.delegate respondsToSelector:@selector(zoneView:shouldRefreshForPlacement:)]) {
+                shouldRefresh = [self.delegate zoneView:self shouldRefreshForPlacement:_currentPlacement];
+            }
+            
+            if (shouldRefresh) {
                 
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self performSelector:@selector(refreshPlacement) withObject:nil afterDelay:self.currentPlacement.refreshAfter];
-                });
+                // Check if we need to request a new placement in a few seconds (also don't fire a new refresh if one is already being fired
+                if (self.currentPlacement.refreshAfter > 0 && !self.refreshScheduled) {
+                    
+                    self.refreshScheduled = YES;
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self performSelector:@selector(refreshPlacement) withObject:nil afterDelay:self.currentPlacement.refreshAfter];
+                    });
+                }
             }
         }
        

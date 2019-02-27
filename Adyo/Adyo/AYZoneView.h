@@ -17,6 +17,9 @@
 
 @optional
 
+- (BOOL)zoneView:(AYZoneView *)zoneView shouldDisplayPlacement:(AYPlacement *)placement;
+- (BOOL)zoneView:(AYZoneView *)zoneView shouldRecordImpressionForPlacement:(AYPlacement *)placement;
+- (BOOL)zoneView:(AYZoneView *)zoneView shouldRefreshForPlacement:(AYPlacement *)placement;
 - (void)zoneView:(AYZoneView *)zoneView didReceivePlacement:(BOOL)found placement:(AYPlacement *)placement;
 - (void)zoneView:(AYZoneView *)zoneView didFailToReceivePlacement:(NSError *)error;
 

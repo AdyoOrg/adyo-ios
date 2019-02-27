@@ -21,6 +21,9 @@
 @property (strong, nonatomic) IBOutlet UITextField *zoneIdTextField;
 @property (strong, nonatomic) IBOutlet UITextField *userIdTextField;
 @property (strong, nonatomic) IBOutlet UITextField *keywordsTextField;
+@property (strong, nonatomic) IBOutlet UISwitch *refreshSwitch;
+@property (strong, nonatomic) IBOutlet UISwitch *displaySwitch;
+@property (strong, nonatomic) IBOutlet UISwitch *recordImpressionSwitch;
 @property (strong, nonatomic) IBOutlet UITextField *customPropertyTextField;
 @property (strong, nonatomic) IBOutlet UITextField *customPropertyTextField2;
 @property (strong, nonatomic) IBOutlet UITextField *customPropertyTextField3;
@@ -116,6 +119,21 @@
     _requestButton.hidden = NO;
     
     [self showAlertWithTitle:@"Request Failed" andBody:error.localizedDescription];
+}
+
+- (BOOL)zoneView:(AYZoneView *)zoneView shouldRefreshForPlacement:(AYPlacement *)placement {
+    
+    return [_refreshSwitch isOn];
+}
+
+- (BOOL)zoneView:(AYZoneView *)zoneView shouldDisplayPlacement:(AYPlacement *)placement {
+    
+    return [_displaySwitch isOn];
+}
+
+- (BOOL)zoneView:(AYZoneView *)zoneView shouldRecordImpressionForPlacement:(AYPlacement *)placement {
+    
+    return [_recordImpressionSwitch isOn];
 }
 
 #pragma mark - Private

@@ -165,6 +165,10 @@
             placement.tagDomainUrl = [NSURL URLWithString:result[@"tag_domain"]];
         }
         
+        if ([result objectForKey:@"metadata"] != nil && ![[result objectForKey:@"metadata"] isKindOfClass:[NSNull class]]) {
+            placement.metadata = result[@"metadata"];
+        }
+        
         if (success) {
             
             // Back to main thread

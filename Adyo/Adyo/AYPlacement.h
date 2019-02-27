@@ -19,6 +19,7 @@
 @property (strong, nonatomic) NSString *thirdPartyImpressionUrl;
 @property (strong, nonatomic) NSString *target;
 @property (strong, nonatomic) NSURL *tagDomainUrl;
+@property (strong, nonatomic) NSDictionary *metadata;
 
 - (void)recordImpression:(void (^)(void))success
                  failure:(void (^)(NSError *adyoError, NSError *thirdPartyError))failure;
