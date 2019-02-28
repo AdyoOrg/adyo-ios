@@ -317,8 +317,6 @@
                 
                 return;
             }
-        } else {
-            NSLog(@"NO RESPONS!!!!");
         }
         
         // Depending on type, use different HTML for our webview
