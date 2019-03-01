@@ -169,6 +169,14 @@
             placement.metadata = result[@"metadata"];
         }
         
+        if ([result objectForKey:@"width"] != nil && ![[result objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
+            placement.width = [result[@"width"] doubleValue];
+        }
+        
+        if ([result objectForKey:@"height"] != nil && ![[result objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
+            placement.height = [result[@"height"] doubleValue];
+        }
+        
         if (success) {
             
             // Back to main thread

@@ -112,7 +112,7 @@
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat: @"<Placement: impressionUrl: %@, clickUrl: %@, creativeType: %@, creativeUrl: %@, creativeHtml: %@, refreshAfter: %.0f, thirdPartyImpressionUrl: %@, tagDomainUrl: %@>", _impressionUrl, _clickUrl, _creativeType, _creativeUrl, _creativeHtml, _refreshAfter, _thirdPartyImpressionUrl, _tagDomainUrl];
+    return [NSString stringWithFormat: @"<Placement: impressionUrl: %@, clickUrl: %@, creativeType: %@, creativeUrl: %@, creativeHtml: %@, refreshAfter: %.0f, thirdPartyImpressionUrl: %@, tagDomainUrl: %@, metadata %@:, width: %f, height:%f>", _impressionUrl, _clickUrl, _creativeType, _creativeUrl, _creativeHtml, _refreshAfter, _thirdPartyImpressionUrl, _tagDomainUrl, _metadata, _width, _height];
 }
 
 @end

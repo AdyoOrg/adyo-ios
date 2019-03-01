@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @interface AYPlacement : NSObject
 
@@ -20,6 +21,8 @@
 @property (strong, nonatomic) NSString *target;
 @property (strong, nonatomic) NSURL *tagDomainUrl;
 @property (strong, nonatomic) NSDictionary *metadata;
+@property (assign, nonatomic) CGFloat width;
+@property (assign, nonatomic) CGFloat height;
 
 - (void)recordImpression:(void (^)(void))success
                  failure:(void (^)(NSError *adyoError, NSError *thirdPartyError))failure;
