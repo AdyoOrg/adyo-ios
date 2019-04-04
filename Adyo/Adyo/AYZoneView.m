@@ -70,7 +70,13 @@
 }
 
 - (void)dealloc {
-    [_webView removeObserver:self forKeyPath:@"loading"];
+    
+    @try {
+        [_webView removeObserver:self forKeyPath:@"loading"];
+    } @catch (id exception) {
+        // Caused by iOS 10 users - Do nothing as it wasn't attached because an exception was thrown
+    }
+    
     _webView.scrollView.delegate = nil;
     _webView.navigationDelegate = nil;
     _webView.UIDelegate = nil;
