@@ -70,13 +70,6 @@
 }
 
 - (void)dealloc {
-    
-    @try {
-        [_webView removeObserver:self forKeyPath:@"loading"];
-    } @catch (id exception) {
-        // Caused by iOS 10 users - Do nothing as it wasn't attached because an exception was thrown
-    }
-    
     _webView.scrollView.delegate = nil;
     _webView.navigationDelegate = nil;
     _webView.UIDelegate = nil;
@@ -86,27 +79,90 @@
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     
-    // Only used for popup view to get height of content
-    if (webView != _popupWebView) {
-        return;
-    }
-    
-    _popupViewController.activityIndicator.hidden = YES;
-    [_popupViewController.activityIndicator stopAnimating];
-   
-    // Only detect and resize popup wrapper if set to
-    if (_popupScalesToContent) {
-        [_popupWebView evaluateJavaScript:@"document.body.scrollHeight" completionHandler:^(id _Nullable result, NSError * _Nullable error) {
-            
-            self.currentPopupContentHeight = [result floatValue] + 38; // Constant of 38 works well compared to using height of navigation bar (which is 44).
-            [self refreshPopupConstraints];
-        }];
+    if (webView == _webView && _loading && !_webView.loading) {
         
-        [_popupWebView evaluateJavaScript:@"document.body.scrollWidth" completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+        _loading = NO;
+        
+        // Disable action sheet from popping up when long pressing
+        [_webView evaluateJavaScript:@"document.body.style.webkitTouchCallout='none';" completionHandler:nil];
+        
+        // Disable text selection
+        [_webView evaluateJavaScript:@"document.body.style.webkitUserSelect='none'" completionHandler:nil];
+        
+        // Enable interaction again so taps don't pass through it
+        self.userInteractionEnabled = YES;
+        
+        // If the placement has a click url, we need to add a tap gesture recognizer to the web view a whole to intercept taps
+        if (_tapGestureRecognizer) {
             
-            self.currentPopupContentWidth = [result floatValue];
-            [self refreshPopupConstraints];
-        }];
+            [_webView removeGestureRecognizer:_tapGestureRecognizer];
+            _tapGestureRecognizer = nil;
+        }
+        
+        if (_currentPlacement.clickUrl && ![_currentPlacement.clickUrl isKindOfClass:[NSNull class]]) {
+            
+            _tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(webViewTapped)];
+            _tapGestureRecognizer.delegate = self;
+            [_webView addGestureRecognizer:_tapGestureRecognizer];
+        }
+        
+        // Let delegate know we have received the placement
+        if ([_delegate respondsToSelector:@selector(zoneView:didReceivePlacement:placement:)]) {
+            [_delegate zoneView:self didReceivePlacement:YES placement:_currentPlacement];
+        }
+        
+        // Record the impression on the placement depending on delegate
+        BOOL shouldRecordImpression = YES;
+        
+        if ([self.delegate respondsToSelector:@selector(zoneView:shouldRecordImpressionForPlacement:)]) {
+            
+            shouldRecordImpression = [self.delegate zoneView:self shouldRecordImpressionForPlacement:_currentPlacement];
+        }
+        
+        if (shouldRecordImpression) {
+            [_currentPlacement recordImpression:nil failure:nil];
+        }
+        
+        // Ask delegate whether to refresh even through we are not going to continue
+        BOOL shouldRefresh = YES;
+        
+        if ([self.delegate respondsToSelector:@selector(zoneView:shouldRefreshForPlacement:)]) {
+            shouldRefresh = [self.delegate zoneView:self shouldRefreshForPlacement:_currentPlacement];
+        }
+        
+        if (shouldRefresh) {
+            
+            // Check if we need to request a new placement in a few seconds (also don't fire a new refresh if one is already being fired
+            if (self.currentPlacement.refreshAfter > 0 && !self.refreshScheduled) {
+                
+                self.refreshScheduled = YES;
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self performSelector:@selector(refreshPlacement) withObject:nil afterDelay:self.currentPlacement.refreshAfter];
+                });
+            }
+        }
+    } else if (webView == _popupWebView) {
+        
+        // Only used for popup view to get height of content
+      
+        _popupViewController.activityIndicator.hidden = YES;
+        [_popupViewController.activityIndicator stopAnimating];
+       
+        // Only detect and resize popup wrapper if set to
+        if (_popupScalesToContent) {
+            [_popupWebView evaluateJavaScript:@"document.body.scrollHeight" completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+                
+                self.currentPopupContentHeight = [result floatValue] + 38; // Constant of 38 works well compared to using height of navigation bar (which is 44).
+                [self refreshPopupConstraints];
+            }];
+            
+            [_popupWebView evaluateJavaScript:@"document.body.scrollWidth" completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+                
+                self.currentPopupContentWidth = [result floatValue];
+                [self refreshPopupConstraints];
+            }];
+        }
     }
 }
 
@@ -209,9 +265,6 @@
     // Don't allow webview to scroll
     _webView.scrollView.scrollEnabled = NO;
     _webView.scrollView.bounces = NO;
-    
-    // Attach KVO to webview to determine if all content within webview has loaded
-    [_webView addObserver:self forKeyPath:@"loading" options:NSKeyValueObservingOptionNew context:nil];
     
     // Setup popup view related members
     _currentPopupContentWidth = 400;
@@ -418,85 +471,6 @@
     AYPlacementRequestParams *randomParams = [self getRandomAvailableParams];
     
     [self requestSinglePlacement:randomParams];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object change:(NSDictionary *)change
-                       context:(void *)context {
-
-    if ([keyPath isEqualToString:@"loading"] && object == _webView) {
-
-        if (_loading && !_webView.loading) {
-            
-            // Disable action sheet from popping up when long pressing
-            [_webView evaluateJavaScript:@"document.body.style.webkitTouchCallout='none';" completionHandler:nil];
-            
-            // Disable text selection
-            [_webView evaluateJavaScript:@"document.body.style.webkitUserSelect='none'" completionHandler:nil];
-            
-            _loading = NO;
-            
-            // Enable interaction again so taps don't pass through it
-            self.userInteractionEnabled = YES;
-            
-            // If the placement has a click url, we need to add a tap gesture recognizer to the web view a whole to intercept taps
-            if (_tapGestureRecognizer) {
-                
-                [_webView removeGestureRecognizer:_tapGestureRecognizer];
-                _tapGestureRecognizer = nil;
-            }
-            
-            if (_currentPlacement.clickUrl && ![_currentPlacement.clickUrl isKindOfClass:[NSNull class]]) {
-                
-                _tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(webViewTapped)];
-                _tapGestureRecognizer.delegate = self;
-                [_webView addGestureRecognizer:_tapGestureRecognizer];
-                
-            }
-            
-            // Let delegate know we have received the placement
-            if ([_delegate respondsToSelector:@selector(zoneView:didReceivePlacement:placement:)]) {
-                [_delegate zoneView:self didReceivePlacement:YES placement:_currentPlacement];
-            }
-            
-            // Record the impression on the placement depending on delegate
-            BOOL shouldRecordImpression = YES;
-            
-            if ([self.delegate respondsToSelector:@selector(zoneView:shouldRecordImpressionForPlacement:)]) {
-                
-                shouldRecordImpression = [self.delegate zoneView:self shouldRecordImpressionForPlacement:_currentPlacement];
-            }
-            
-            if (shouldRecordImpression) {
-                [_currentPlacement recordImpression:nil failure:nil];
-            }
-            
-            // Ask delegate whether to refresh even through we are not going to continue
-            BOOL shouldRefresh = YES;
-            
-            if ([self.delegate respondsToSelector:@selector(zoneView:shouldRefreshForPlacement:)]) {
-                shouldRefresh = [self.delegate zoneView:self shouldRefreshForPlacement:_currentPlacement];
-            }
-            
-            if (shouldRefresh) {
-                
-                // Check if we need to request a new placement in a few seconds (also don't fire a new refresh if one is already being fired
-                if (self.currentPlacement.refreshAfter > 0 && !self.refreshScheduled) {
-                    
-                    self.refreshScheduled = YES;
-                    
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self performSelector:@selector(refreshPlacement) withObject:nil afterDelay:self.currentPlacement.refreshAfter];
-                    });
-                }
-            }
-        }
-       
-    } else {
-        
-        // Make sure to call the superclass's implementation in the else block in case it is also implementing KVO
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
 }
 
 - (void)refreshPlacement {
