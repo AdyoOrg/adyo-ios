@@ -12,6 +12,7 @@
 @import AdSupport;
 
 #define BASE_URL @"https://engine.adyo.co.za/serve"
+#define SDK_VERSION @"1.6.2"
 
 @implementation Adyo
 
@@ -67,8 +68,12 @@
         data[@"custom"] = params.custom;
     }
     
+    // Optional Creative Types
+    if (params.creativeTypes != nil && [params.creativeTypes isKindOfClass:[NSArray class]] && params.creativeTypes.count > 0) {
+        data[@"creative_types"] = params.creativeTypes;
+    }
+    
     NSData *postData = [NSJSONSerialization dataWithJSONObject:data options:0 error:nil];
-    NSString* sdkVersion = [[NSBundle bundleForClass:[Adyo class]] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
     NSString *model = [UIDeviceHardware platformString];
     NSString *platform = nil;
     
@@ -89,7 +94,7 @@
     [request setHTTPMethod:@"POST"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    [request setValue:sdkVersion forHTTPHeaderField:@"X-Adyo-SDK-Version"];
+    [request setValue:SDK_VERSION forHTTPHeaderField:@"X-Adyo-SDK-Version"];
     [request setValue:platform forHTTPHeaderField:@"X-Adyo-Platform"];
     [request setValue:model forHTTPHeaderField:@"X-Adyo-Model"];
     [request setValue:@"iOS" forHTTPHeaderField:@"X-Adyo-OS"];
@@ -128,10 +133,6 @@
         }
         
         if (![result[@"found"] boolValue]) {
-            
-#ifdef D
-            NSLog(@"[Adyo] - Placement not found.");
-#endif
             
             if (success) {
                 
