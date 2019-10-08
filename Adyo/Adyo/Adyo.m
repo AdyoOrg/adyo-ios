@@ -12,7 +12,7 @@
 @import AdSupport;
 
 #define BASE_URL @"https://engine.adyo.co.za/serve"
-#define SDK_VERSION @"1.6.2"
+#define SDK_VERSION @"1.6.3"
 
 @implementation Adyo
 
@@ -176,6 +176,10 @@
         
         if ([result objectForKey:@"height"] != nil && ![[result objectForKey:@"height"] isKindOfClass:[NSNull class]]) {
             placement.height = [result[@"height"] doubleValue];
+        }
+        
+        if ([result objectForKey:@"matched_keywords"] != nil && ![[result objectForKey:@"matched_keywords"] isKindOfClass:[NSNull class]]) {
+            placement.matchedKeywords = result[@"matched_keywords"];
         }
         
         if (success) {

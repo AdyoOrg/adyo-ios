@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'Adyo'
-  s.version = '1.6.2'
+  s.version = '1.6.3'
   s.license = { :type => 'MIT', :file => 'LICENSE' }
   s.summary = 'Adyo iOS SDK'
   s.homepage = 'https://github.com/AdyoOrg/adyo-ios'

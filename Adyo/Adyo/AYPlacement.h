@@ -23,6 +23,7 @@
 @property (strong, nonatomic) NSDictionary *metadata;
 @property (assign, nonatomic) CGFloat width;
 @property (assign, nonatomic) CGFloat height;
+@property (strong, nonatomic) NSArray<NSString *> *matchedKeywords;
 
 - (void)recordImpression:(void (^)(void))success
                  failure:(void (^)(NSError *adyoError, NSError *thirdPartyError))failure;
