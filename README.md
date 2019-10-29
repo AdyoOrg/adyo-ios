@@ -222,7 +222,3 @@ The project also provides a testing tool for you to input custom parameters to t
 ## Feedback
 
 For any feedback, please contact us at: devops@unitx.co.za or create an issue. You are also more than welcome to send a pull request for any changes or bug fixes.
-
-## Changelog
-
-* v1.0.0 - Initial Release
