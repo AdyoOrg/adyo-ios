@@ -18,7 +18,7 @@ Installation can be done manually by building and copying the framework into you
 
 ### CocoaPods
 
-1. Add the following to your Podfile: `pod 'Adyo', '~> 1.6.3'`
+1. Add the following to your Podfile: `pod 'Adyo', '~> 1.6.4'`
 2. Run `pod install` and open the resulting Xcode workspace.
 
 ## Usage
