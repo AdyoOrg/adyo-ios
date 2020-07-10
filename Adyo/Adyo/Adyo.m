@@ -12,7 +12,7 @@
 @import AdSupport;
 
 #define BASE_URL @"https://engine.adyo.co.za/serve"
-#define SDK_VERSION @"1.6.3"
+#define SDK_VERSION @"1.6.4"
 
 @implementation Adyo
 
@@ -180,6 +180,10 @@
         
         if ([result objectForKey:@"matched_keywords"] != nil && ![[result objectForKey:@"matched_keywords"] isKindOfClass:[NSNull class]]) {
             placement.matchedKeywords = result[@"matched_keywords"];
+        }
+        
+        if ([result objectForKey:@"third_party_impression_url"] != nil && ![[result objectForKey:@"third_party_impression_url"] isKindOfClass:[NSNull class]]) {
+            placement.thirdPartyImpressionUrl = result[@"third_party_impression_url"];
         }
         
         if (success) {
